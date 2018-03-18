@@ -26,34 +26,20 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
-import Routing
+import FluentSQLite
 import Vapor
 
-/// Register your application's routes here.
-///
-/// [Learn More →](https://docs.vapor.codes/3.0/getting-started/structure/#routesswift)
-public func routes(_ router: Router) throws {
-  // Basic "Hello, world!" example
-  router.get("hello") { req in
-    return "Hello, world!"
+final class Acronym: Codable {
+  var id: Int?
+  var short: String
+  var long: String
+
+  init(short: String, long: String) {
+    self.short = short
+    self.long = long
   }
-
-  // Example of creating a Service and using it.
-  router.get("hash", String.parameter) { req -> String in
-    // Create a BCryptHasher using the Request's Container
-    let hasher = try req.make(BCryptHasher.self)
-
-    // Fetch the String parameter (as described in the route)
-    let string = try req.parameter(String.self)
-
-    // Return the hashed string!
-    return try hasher.make(string)
-  }
-
-  router.post("api", "acronyms") { req -> Future<Acronym> in
-    return try req.content.decode(Acronym.self).flatMap(to: Acronym.self) { acronym in
-      return acronym.save(on: req)
-    }
-  }
-
 }
+
+extension Acronym: SQLiteModel {}
+extension Acronym: Content {}
+extension Acronym: Migration {}
