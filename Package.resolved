@@ -50,9 +50,9 @@
         "package": "Fluent",
         "repositoryURL": "https://github.com/vapor/fluent.git",
         "state": {
-          "branch": null,
-          "revision": "ff1d9a9e0bc13f46eb834744d50bea8183fbc47c",
-          "version": "3.0.0-rc.2.2"
+          "branch": "automatic-revert",
+          "revision": "a9f9e8c2063e9b69c215d3665c8d26d26069e33b",
+          "version": null
         }
       },
       {
