@@ -26,34 +26,29 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
-import Routing
+import Foundation
 import Vapor
-import Fluent
+import FluentPostgreSQL
 
-/// Register your application's routes here.
-///
-/// [Learn More →](https://docs.vapor.codes/3.0/getting-started/structure/#routesswift)
-public func routes(_ router: Router) throws {
-  // Basic "Hello, world!" example
-  router.get("hello") { req in
-    return "Hello, world!"
+final class User: Codable {
+  var id: UUID?
+  var name: String
+  var username: String
+
+  init(name: String, username: String) {
+    self.name = name
+    self.username = username
   }
-
-  // Example of creating a Service and using it.
-  router.get("hash", String.parameter) { req -> String in
-    // Create a BCryptHasher using the Request's Container
-    let hasher = try req.make(BCryptHasher.self)
-
-    // Fetch the String parameter (as described in the route)
-    let string = try req.parameter(String.self)
-
-    // Return the hashed string!
-    return try hasher.make(string)
-  }
-
-  let acronymsController = AcronymsController()
-  try router.register(collection: acronymsController)
-
-  let usersController = UsersController()
-  try router.register(collection: usersController)
 }
+
+extension User: PostgreSQLUUIDModel {}
+extension User: Content {}
+extension User: Migration {}
+extension User: Parameter {}
+
+extension User {
+  var acronyms: Children<User, Acronym> {
+    return children(\.userID)
+  }
+}
+
