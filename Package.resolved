@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/vapor/console.git",
         "state": {
           "branch": null,
-          "revision": "e37e02c86ded07678ebf22517fdb8d070c5447f5",
-          "version": "3.0.0-rc.2.1"
+          "revision": "a69a7ac19a89beec95672f25a8001723797a2566",
+          "version": "3.0.0-rc.2.1.1"
         }
       },
       {
@@ -50,9 +50,9 @@
         "package": "Fluent",
         "repositoryURL": "https://github.com/vapor/fluent.git",
         "state": {
-          "branch": "automatic-revert",
-          "revision": "a9f9e8c2063e9b69c215d3665c8d26d26069e33b",
-          "version": null
+          "branch": null,
+          "revision": "c3bc6a57d91eaaf0cc2aff589d0e50a6139f5571",
+          "version": "3.0.0-rc.2.2.1"
         }
       },
       {
