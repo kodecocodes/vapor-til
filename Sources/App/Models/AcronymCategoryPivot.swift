@@ -26,37 +26,32 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
-import Routing
+import FluentPostgreSQL
+import Foundation
 import Vapor
-import Fluent
 
-/// Register your application's routes here.
-///
-/// [Learn More →](https://docs.vapor.codes/3.0/getting-started/structure/#routesswift)
-public func routes(_ router: Router) throws {
-  // Basic "Hello, world!" example
-  router.get("hello") { req in
-    return "Hello, world!"
+final class AcronymCategoryPivot: PostgreSQLUUIDPivot {
+  var id: UUID?
+  var acronymID: Acronym.ID
+  var categoryID: Category.ID
+
+  typealias Left = Acronym
+  typealias Right = Category
+  static let leftIDKey: LeftIDKey = \.acronymID
+  static let rightIDKey: RightIDKey = \.categoryID
+
+  init(_ acronymID: Acronym.ID, _ categoryID: Category.ID) {
+    self.acronymID = acronymID
+    self.categoryID = categoryID
   }
+}
 
-  // Example of creating a Service and using it.
-  router.get("hash", String.parameter) { req -> String in
-    // Create a BCryptHasher using the Request's Container
-    let hasher = try req.make(BCryptHasher.self)
-
-    // Fetch the String parameter (as described in the route)
-    let string = try req.parameter(String.self)
-
-    // Return the hashed string!
-    return try hasher.make(string)
+extension AcronymCategoryPivot: Migration {
+  static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {
+    return Database.create(self, on: connection) { builder in
+      try addProperties(to: builder)
+      try builder.addReference(from: \.acronymID, to: \Acronym.id)
+      try builder.addReference(from: \.categoryID, to: \Category.id)
+    }
   }
-
-  let acronymsController = AcronymsController()
-  try router.register(collection: acronymsController)
-
-  let usersController = UsersController()
-  try router.register(collection: usersController)
-
-  let categoriesController = CategoriesController()
-  try router.register(collection: categoriesController)
 }
