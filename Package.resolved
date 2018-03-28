@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/vapor/core.git",
         "state": {
           "branch": null,
-          "revision": "9238f270cdd40349fd1e047dab21f4dea1999ec6",
-          "version": "3.0.0-rc.2.3"
+          "revision": "6d3da8dc3f84cb082f0c587948edc038fcc13255",
+          "version": "3.0.0-rc.2.4"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/vapor/fluent.git",
         "state": {
           "branch": null,
-          "revision": "c3bc6a57d91eaaf0cc2aff589d0e50a6139f5571",
-          "version": "3.0.0-rc.2.2.1"
+          "revision": "eb63485dfd6fbd0773a25e1b94830fbcedaa8266",
+          "version": "3.0.0-rc.2.3.1"
         }
       },
       {
@@ -60,8 +60,8 @@
         "repositoryURL": "https://github.com/vapor/fluent-postgresql.git",
         "state": {
           "branch": null,
-          "revision": "41832e0963296e4d234f3b2b19b7ed457dfa46dd",
-          "version": "1.0.0-rc.2"
+          "revision": "495db9b9113cfbdf80377801c0f1cf7a95ebf05e",
+          "version": "1.0.0-rc.2.1"
         }
       },
       {
@@ -89,33 +89,6 @@
           "branch": null,
           "revision": "02205a16a3f4714a08836529f5a868c2ce256719",
           "version": "1.0.0-rc.2.2"
-        }
-      },
-      {
-        "package": "TemplateKit",
-        "repositoryURL": "https://github.com/vapor/template-kit.git",
-        "state": {
-          "branch": null,
-          "revision": "ef940383716d05ac6e1b0dcb0ba672c7c0f8a718",
-          "version": "1.0.0-rc.2.0.1"
-        }
-      },
-      {
-        "package": "Validation",
-        "repositoryURL": "https://github.com/vapor/validation.git",
-        "state": {
-          "branch": null,
-          "revision": "aa12fbde809392ef39ddf046252c94a9fd67c420",
-          "version": "2.0.0-rc.2.1"
-        }
-      },
-      {
-        "package": "Vapor",
-        "repositoryURL": "https://github.com/vapor/vapor.git",
-        "state": {
-          "branch": null,
-          "revision": "72424e773c26eaece83819d1a067ae77b4f68cc6",
-          "version": "3.0.0-rc.2.2"
         }
       },
       {
@@ -152,6 +125,33 @@
           "branch": null,
           "revision": "37760e9a52030bb9011972c5213c3350fa9d41fd",
           "version": "1.0.0"
+        }
+      },
+      {
+        "package": "TemplateKit",
+        "repositoryURL": "https://github.com/vapor/template-kit.git",
+        "state": {
+          "branch": null,
+          "revision": "61ed3d3b0df4c181d6b88e06b418f425978ac2af",
+          "version": "1.0.0-rc.2.0.3"
+        }
+      },
+      {
+        "package": "Validation",
+        "repositoryURL": "https://github.com/vapor/validation.git",
+        "state": {
+          "branch": null,
+          "revision": "1ce87fc2d18a8f15a491805825063c8db493a51e",
+          "version": "2.0.0-rc.2.1.1"
+        }
+      },
+      {
+        "package": "Vapor",
+        "repositoryURL": "https://github.com/vapor/vapor.git",
+        "state": {
+          "branch": null,
+          "revision": "5e59691ef575597aa640da76ccb9fc5ee638f2c1",
+          "version": "3.0.0-rc.2.2.1"
         }
       }
     ]
