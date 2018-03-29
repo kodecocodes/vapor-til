@@ -1,6 +1,6 @@
 <p align="center">
     <a href="http://www.raywenderlich.com/">
-        <img src="https://scontent-lht6-1.xx.fbcdn.net/v/t1.0-9/14055075_1130689040310720_998806737720796699_n.png?_nc_cat=0&oh=acc7ba1b3f29fcb5df68ec238e4df95e&oe=5B72EB63" width="200" alt="Ray Wenderlich">
+        <img src="https://scontent-lht6-1.xx.fbcdn.net/v/t1.0-9/14055075_1130689040310720_998806737720796699_n.png?_nc_cat=0&oh=acc7ba1b3f29fcb5df68ec238e4df95e&oe=5B72EB63" width="200" alt="raywenderlich.com">
     </a>
     <br>
     <br>
@@ -21,7 +21,7 @@ You'll learn how to build routes and use Fluent to interact with a database. You
   </a>
 </p>
 
-The book is available on the [Ray Wenderlich store](https://store.raywenderlich.com/products/server-side-swift-with-vapor).
+The book is available on the [raywenderlich.com store](https://store.raywenderlich.com/products/server-side-swift-with-vapor).
 
 ## Video Course
 
@@ -31,7 +31,7 @@ The book is available on the [Ray Wenderlich store](https://store.raywenderlich.
   </a>
 </p>
 
-The video course is available to Ray Wenderlich subscribers, which can be [watched here](https://videos.raywenderlich.com/courses/115-server-side-swift-with-vapor/lessons/1).
+The video course is available to raywenderlich.com subscribers, which can be [watched here](https://videos.raywenderlich.com/courses/115-server-side-swift-with-vapor/lessons/1).
 
 There are 30 videos covering:
 
