@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/vapor/console.git",
         "state": {
           "branch": null,
-          "revision": "273cf2ed1f4daba88a452494c342020171d8c7b8",
-          "version": "3.0.0-rc.2.2"
+          "revision": "038e30ec9004fb1915d14d964a3facc1ec5c80f4",
+          "version": "3.0.0"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/vapor/core.git",
         "state": {
           "branch": null,
-          "revision": "f758c50d70a691249b97fedaed6551e637bfc597",
-          "version": "3.0.0-rc.2.5.1"
+          "revision": "5383e40f19d71da99e496afa9972c085abc2379d",
+          "version": "3.0.2"
         }
       },
       {
@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/vapor/crypto.git",
         "state": {
           "branch": null,
-          "revision": "4c7acb4fbf1720682275f0ef543474c951d84a09",
-          "version": "3.0.0-rc.3"
+          "revision": "e77aa181580b466fb26865918b62973d9fbfaed6",
+          "version": "3.0.0"
         }
       },
       {
@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/vapor/database-kit.git",
         "state": {
           "branch": null,
-          "revision": "ce82abe73051388dcadbf34873b29a75df58cabc",
-          "version": "1.0.0-rc.2.1.1"
+          "revision": "e594e658cc001e04b8d4ad13881d8714c510f94f",
+          "version": "1.0.0-rc.2.2.2"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/vapor/engine.git",
         "state": {
           "branch": null,
-          "revision": "cd6756a971caba5f14a861b446fe682a15d2ae28",
-          "version": "3.0.0-rc.2.1"
+          "revision": "4846ea9abeb04863f82f618ee8cb22650a82ae3c",
+          "version": "3.0.0-rc.2.1.1"
         }
       },
       {
@@ -62,6 +62,15 @@
           "branch": null,
           "revision": "495db9b9113cfbdf80377801c0f1cf7a95ebf05e",
           "version": "1.0.0-rc.2.1"
+        }
+      },
+      {
+        "package": "Leaf",
+        "repositoryURL": "https://github.com/vapor/leaf.git",
+        "state": {
+          "branch": null,
+          "revision": "3e6027371aeaf780e447d2100eae173f1a6ae30f",
+          "version": "3.0.0-rc.2.1.1"
         }
       },
       {
@@ -87,8 +96,8 @@
         "repositoryURL": "https://github.com/vapor/service.git",
         "state": {
           "branch": null,
-          "revision": "02205a16a3f4714a08836529f5a868c2ce256719",
-          "version": "1.0.0-rc.2.2"
+          "revision": "281a70b69783891900be31a9e70051b6fe19e146",
+          "version": "1.0.0"
         }
       },
       {
@@ -150,8 +159,8 @@
         "repositoryURL": "https://github.com/vapor/vapor.git",
         "state": {
           "branch": null,
-          "revision": "5e59691ef575597aa640da76ccb9fc5ee638f2c1",
-          "version": "3.0.0-rc.2.2.1"
+          "revision": "c045b8d02e6a135f055e879a9fa789026a0b4e9d",
+          "version": "3.0.0-rc.2.2.4"
         }
       }
     ]

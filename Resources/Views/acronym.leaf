@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>#(title) | Acronyms</title>
+</head>
+<body>
+  <h1>#(acronym.short)</h1>
+  <h2>#(acronym.long)</h2>
+
+  <p>Created by #(user.name)</p>
+</body>
+</html>
