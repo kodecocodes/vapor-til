@@ -26,28 +26,41 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
-import Routing
 import Vapor
-import Fluent
+import Leaf
 
-/// Register your application's routes here.
-///
-/// [Learn More →](https://docs.vapor.codes/3.0/getting-started/structure/#routesswift)
-public func routes(_ router: Router) throws {
-  // Basic "Hello, world!" example
-  router.get("hello") { req in
-    return "Hello, world!"
+struct WebsiteController: RouteCollection {
+  func boot(router: Router) throws {
+    router.get(use: indexHandler)
+    router.get("acronyms", Acronym.parameter, use: acronymHandler)
   }
 
-  let acronymsController = AcronymsController()
-  try router.register(collection: acronymsController)
+  func indexHandler(_ req: Request) throws -> Future<View> {
+    return Acronym.query(on: req).all().flatMap(to: View.self) { acronyms in
+      let acronymsData = acronyms.isEmpty ? nil : acronyms
+      let context = IndexContext(title: "Homepage", acronyms: acronymsData)
+      return try req.make(LeafRenderer.self).render("index", context)
+    }
+  }
 
-  let usersController = UsersController()
-  try router.register(collection: usersController)
-
-  let categoriesController = CategoriesController()
-  try router.register(collection: categoriesController)
-
-  let websiteController = WebsiteController()
-  try router.register(collection: websiteController)
+  func acronymHandler(_ req: Request) throws -> Future<View> {
+    return try req.parameter(Acronym.self).flatMap(to: View.self) { acronym in
+      return try acronym.user.get(on: req).flatMap(to: View.self) { user in
+        let context = AcronymContext(title: acronym.short, acronym: acronym, user: user)
+        return try req.make(LeafRenderer.self).render("acronym", context)
+      }
+    }
+  }
 }
+
+struct IndexContext: Encodable {
+  let title: String
+  let acronyms: [Acronym]?
+}
+
+struct AcronymContext: Encodable {
+  let title: String
+  let acronym: Acronym
+  let user: User
+}
+
