@@ -51,6 +51,24 @@ struct WebsiteController: RouteCollection {
       }
     }
   }
+
+  func userHandler(_ req: Request) throws -> Future<View> {
+    return try req.parameter(User.self).flatMap(to: View.self) { user in
+      return try user.acronyms.query(on: req).all().flatMap(to: View.self) { acronyms in
+        let usersAcronyms = acronyms.isEmpty ? nil : acronyms
+        let context = UserContext(title: user.name, user: user, acronyms: usersAcronyms)
+        return try req.make(LeafRenderer.self).render("user", context)
+      }
+    }
+  }
+
+  func allUsersHandler(_ req: Request) throws -> Future<View> {
+    return User.query(on: req).all().flatMap(to: View.self) { users in
+      let usersData = users.isEmpty ? nil : users
+      let context = AllUsersContext(title: "All Users", users: usersData)
+      return try req.make(LeafRenderer.self).render("allUsers", context)
+    }
+  }
 }
 
 struct IndexContext: Encodable {
@@ -64,3 +82,13 @@ struct AcronymContext: Encodable {
   let user: User
 }
 
+struct UserContext: Encodable {
+  let title: String
+  let user: User
+  let acronyms: [Acronym]?
+}
+
+struct AllUsersContext: Encodable {
+  let title: String
+  let users: [User]?
+}
