@@ -65,8 +65,7 @@ struct WebsiteController: RouteCollection {
 
   func allUsersHandler(_ req: Request) throws -> Future<View> {
     return User.query(on: req).all().flatMap(to: View.self) { users in
-      let usersData = users.isEmpty ? nil : users
-      let context = AllUsersContext(title: "All Users", users: usersData)
+      let context = AllUsersContext(title: "All Users", users: users)
       return try req.make(LeafRenderer.self).render("allUsers", context)
     }
   }
@@ -91,5 +90,5 @@ struct UserContext: Encodable {
 
 struct AllUsersContext: Encodable {
   let title: String
-  let users: [User]?
+  let users: [User]
 }
