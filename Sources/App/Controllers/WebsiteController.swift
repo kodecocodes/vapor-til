@@ -33,6 +33,8 @@ struct WebsiteController: RouteCollection {
   func boot(router: Router) throws {
     router.get(use: indexHandler)
     router.get("acronyms", Acronym.parameter, use: acronymHandler)
+    router.get("users", User.parameter, use: userHandler)
+    router.get("users", use: allUsersHandler)
   }
 
   func indexHandler(_ req: Request) throws -> Future<View> {
