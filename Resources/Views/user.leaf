@@ -2,7 +2,7 @@
   <h1>#(user.name)</h1>
   <h2>#(user.username)</h2>
 
-  #if(acronyms) {
+  #if(count(acronyms) > 0) {
     <table class="table table-bordered table-hover">
       <thead class="thead-light">
         <tr>

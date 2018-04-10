@@ -57,8 +57,7 @@ struct WebsiteController: RouteCollection {
   func userHandler(_ req: Request) throws -> Future<View> {
     return try req.parameter(User.self).flatMap(to: View.self) { user in
       return try user.acronyms.query(on: req).all().flatMap(to: View.self) { acronyms in
-        let usersAcronyms = acronyms.isEmpty ? nil : acronyms
-        let context = UserContext(title: user.name, user: user, acronyms: usersAcronyms)
+        let context = UserContext(title: user.name, user: user, acronyms: acronyms)
         return try req.make(LeafRenderer.self).render("user", context)
       }
     }
@@ -87,7 +86,7 @@ struct AcronymContext: Encodable {
 struct UserContext: Encodable {
   let title: String
   let user: User
-  let acronyms: [Acronym]?
+  let acronyms: [Acronym]
 }
 
 struct AllUsersContext: Encodable {
