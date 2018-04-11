@@ -69,7 +69,7 @@ struct AcronymsController: RouteCollection {
   }
 
   func deleteHandler(_ req: Request) throws -> Future<HTTPStatus> {
-    return try req.parameter(Acronym.self).transform(to: HTTPStatus.noContent)
+    return try req.parameter(Acronym.self).delete(on: req).transform(to: HTTPStatus.noContent)
   }
 
   func searchHandler(_ req: Request) throws -> Future<[Acronym]> {
