@@ -31,10 +31,14 @@ import App
 import FluentPostgreSQL
 
 extension Application {
-  static func testable() throws -> Application {
+  static func testable(envArgs: [String]? = nil) throws -> Application {
     var config = Config.default()
-    var env = Environment.testing
     var services = Services.default()
+    var env = Environment.testing
+
+    if let environmentArgs = envArgs {
+      env.arguments = environmentArgs
+    }
 
     try App.configure(&config, &env, &services)
     let app = try Application(config: config, environment: env, services: services)
@@ -44,10 +48,9 @@ extension Application {
   }
 
   func teardown(connection: PostgreSQLConnection) throws {
-    let console = try! self.make(Console.self)
-    var commandInput = CommandInput(arguments: ["revert", "--all", "-y"])
-    try console.run(RevertCommand(), input: &commandInput, on: self).wait()
     self.releaseConnection(connection, to: .psql)
+    let revertEnvironment = ["vapor", "revert", "--all", "-y"]
+    try Application.testable(envArgs: revertEnvironment).asyncRun().wait()
   }
 
   func getResponse<T>(to path: String, method: HTTPMethod = .GET, headers: HTTPHeaders = .init(), body: HTTPBody = .init(), decodeTo type: T.Type) throws -> T where T: Decodable {
@@ -60,7 +63,7 @@ extension Application {
   }
 
   func getResponse<T, U>(to path: String, method: HTTPMethod = .GET, headers: HTTPHeaders = .init(), data: U, decodeTo type: T.Type) throws -> T where T: Decodable, U: Encodable {
-    let body = try JSONEncoder().encodeBody(from: data)
+    let body = try HTTPBody(data: JSONEncoder().encode(data))
     return try self.getResponse(to: path, method: method, headers: headers, body: body, decodeTo: type)
   }
 
@@ -72,7 +75,7 @@ extension Application {
   }
 
   func sendRequest<T>(to path: String, method: HTTPMethod, headers: HTTPHeaders, data: T) throws where T: Encodable {
-    let body = try JSONEncoder().encodeBody(from: data)
+    let body = try HTTPBody(data: JSONEncoder().encode(data))
     try self.sendRequest(to: path, method: method, headers: headers, body: body)
   }
 }
