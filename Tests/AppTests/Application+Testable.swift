@@ -31,7 +31,7 @@ import App
 import FluentPostgreSQL
 
 extension Application {
-  static func testable(envArgs: [String]? = nil) throws -> Application {
+    static func testable(envArgs: [String]? = nil) throws -> Application {
     var config = Config.default()
     var services = Services.default()
     var env = Environment.testing
@@ -47,19 +47,21 @@ extension Application {
     return app
   }
 
-  func teardown(connection: PostgreSQLConnection) throws {
-    self.releaseConnection(connection, to: .psql)
+  static func reset() throws {
     let revertEnvironment = ["vapor", "revert", "--all", "-y"]
     try Application.testable(envArgs: revertEnvironment).asyncRun().wait()
   }
 
-  func getResponse<T>(to path: String, method: HTTPMethod = .GET, headers: HTTPHeaders = .init(), body: HTTPBody = .init(), decodeTo type: T.Type) throws -> T where T: Decodable {
+  func sendRequest(to path: String, method: HTTPMethod, headers: HTTPHeaders = .init(), body: HTTPBody = .init()) throws -> Response {
     let responder = try self.make(Responder.self)
-    let request = HTTPRequest(method: method, url: URL(string: path)!, headers:headers, body: body)
+    let request = HTTPRequest(method: method, url: URL(string: path)!, headers: headers, body: body)
     let wrappedRequest = Request(http: request, using: self)
-    let response = try responder.respond(to: wrappedRequest).wait()
-    let data = response.http.body.data
-    return try JSONDecoder().decode(type, from: data!)
+    return try responder.respond(to: wrappedRequest).wait()
+  }
+
+  func getResponse<T>(to path: String, method: HTTPMethod = .GET, headers: HTTPHeaders = .init(), body: HTTPBody = .init(), decodeTo type: T.Type) throws -> T where T: Decodable {
+    let response = try self.sendRequest(to: path, method: method, headers: headers, body: body)
+    return try JSONDecoder().decode(type, from: response.http.body.data!)
   }
 
   func getResponse<T, U>(to path: String, method: HTTPMethod = .GET, headers: HTTPHeaders = .init(), data: U, decodeTo type: T.Type) throws -> T where T: Decodable, U: Encodable {
@@ -67,15 +69,8 @@ extension Application {
     return try self.getResponse(to: path, method: method, headers: headers, body: body, decodeTo: type)
   }
 
-  func sendRequest(to path: String, method: HTTPMethod, headers: HTTPHeaders = .init(), body: HTTPBody = .init()) throws {
-    let responder = try self.make(Responder.self)
-    let request = HTTPRequest(method: method, url: URL(string: path)!, headers: headers, body: body)
-    let wrappedRequest = Request(http: request, using: self)
-    _ = try responder.respond(to: wrappedRequest).wait()
-  }
-
   func sendRequest<T>(to path: String, method: HTTPMethod, headers: HTTPHeaders, data: T) throws where T: Encodable {
     let body = try HTTPBody(data: JSONEncoder().encode(data))
-    try self.sendRequest(to: path, method: method, headers: headers, body: body)
+    _ = try self.sendRequest(to: path, method: method, headers: headers, body: body)
   }
 }

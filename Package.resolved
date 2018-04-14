@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/vapor/engine.git",
         "state": {
           "branch": null,
-          "revision": "bfd14fe1d757f0cb16aae8a1638a91b2674d5a26",
-          "version": "3.0.0-rc.2.3"
+          "revision": "2419e37d689b78c9197b2f38cd8f2901cd7dcf9e",
+          "version": "3.0.0-rc.2.3.1"
         }
       },
       {

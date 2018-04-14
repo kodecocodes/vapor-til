@@ -39,15 +39,16 @@ final class CategoryTests : XCTestCase {
   var conn: PostgreSQLConnection!
 
   override func setUp() {
+    try! Application.reset()
     app = try! Application.testable()
     conn = try! app.requestConnection(to: .psql).wait()
   }
 
   override func tearDown() {
-    try! app.teardown(connection: conn)
+    app.releaseConnection(conn, to: .psql)
   }
 
-  func testCategoriesCanBeRetrievedFromDatabase() throws {
+  func testCategoriesCanBeRetrievedFromAPI() throws {
     let category = try Category.create(name: categoryName, on: conn)
     _ = try Category.create(on: conn)
 
@@ -58,7 +59,7 @@ final class CategoryTests : XCTestCase {
     XCTAssertEqual(categories[0].id, category.id)
   }
 
-  func testCategoryCanBeSavedInDatabase() throws {
+  func testCategoryCanBeSavedWithAPI() throws {
     let category = Category(name: categoryName)
     let receivedCategory = try app.getResponse(to: categoriesURI, method: .POST, headers: ["Content-Type": "application/json"], data: category, decodeTo: Category.self)
 
@@ -72,7 +73,7 @@ final class CategoryTests : XCTestCase {
     XCTAssertEqual(categories[0].id, receivedCategory.id)
   }
 
-  func testGettingASingleCategoryFromTheDatabase() throws {
+  func testGettingASingleCategoryFromTheAPI() throws {
     let category = try Category.create(name: categoryName, on: conn)
     let returnedCategory = try app.getResponse(to: "\(categoriesURI)\(category.id!)", decodeTo: Category.self)
 
@@ -80,7 +81,7 @@ final class CategoryTests : XCTestCase {
     XCTAssertEqual(returnedCategory.id, category.id)
   }
 
-  func testGettingACategoriesAcronymsFromTheDatabase() throws {
+  func testGettingACategoriesAcronymsFromTheAPI() throws {
     let acronymShort = "OMG"
     let acronymLong = "Oh My God"
     let acronym = try Acronym.create(short: acronymShort, long: acronymLong, on: conn)
@@ -88,8 +89,8 @@ final class CategoryTests : XCTestCase {
 
     let category = try Category.create(name: categoryName, on: conn)
 
-    try app.sendRequest(to: "/api/acronyms/\(acronym.id!)/categories/\(category.id!)", method: .POST)
-    try app.sendRequest(to: "/api/acronyms/\(acronym2.id!)/categories/\(category.id!)", method: .POST)
+    _ = try app.sendRequest(to: "/api/acronyms/\(acronym.id!)/categories/\(category.id!)", method: .POST)
+    _ = try app.sendRequest(to: "/api/acronyms/\(acronym2.id!)/categories/\(category.id!)", method: .POST)
 
     let acronyms = try app.getResponse(to: "\(categoriesURI)\(category.id!)/acronyms", decodeTo: [Acronym].self)
 
@@ -100,9 +101,9 @@ final class CategoryTests : XCTestCase {
   }
 
   static let allTests = [
-    ("testCategoriesCanBeRetrievedFromDatabase", testCategoriesCanBeRetrievedFromDatabase),
-    ("testCategoryCanBeSavedInDatabase", testCategoryCanBeSavedInDatabase),
-    ("testGettingASingleCategoryFromTheDatabase", testGettingASingleCategoryFromTheDatabase),
-    ("testGettingACategoriesAcronymsFromTheDatabase", testGettingACategoriesAcronymsFromTheDatabase),
+    ("testCategoriesCanBeRetrievedFromAPI", testCategoriesCanBeRetrievedFromAPI),
+    ("testCategoryCanBeSavedWithAPI", testCategoryCanBeSavedWithAPI),
+    ("testGettingASingleCategoryFromTheAPI", testGettingASingleCategoryFromTheAPI),
+    ("testGettingACategoriesAcronymsFromTheAPI", testGettingACategoriesAcronymsFromTheAPI),
     ]
 }

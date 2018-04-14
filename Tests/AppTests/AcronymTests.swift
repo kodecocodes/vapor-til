@@ -40,15 +40,16 @@ final class AcronymTests : XCTestCase {
   var conn: PostgreSQLConnection!
 
   override func setUp() {
+    try! Application.reset()
     app = try! Application.testable()
     conn = try! app.requestConnection(to: .psql).wait()
   }
 
   override func tearDown() {
-    try! app.teardown(connection: conn)
+    app.releaseConnection(conn, to: .psql)
   }
 
-  func testAcronymsCanBeRetrievedFromDatabase() throws {
+  func testAcronymsCanBeRetrievedFromAPI() throws {
     let acronym1 = try Acronym.create(short: acronymShort, long: acronymLong, on: conn)
     _ = try Acronym.create(on: conn)
 
@@ -60,7 +61,7 @@ final class AcronymTests : XCTestCase {
     XCTAssertEqual(acronyms[0].id, acronym1.id)
   }
 
-  func testAcronymCanBeSavedInDatabase() throws {
+  func testAcronymCanBeSavedWithAPI() throws {
     let user = try User.create(on: conn)
     let acronym = Acronym(short: acronymShort, long: acronymLong, userID: user.id!)
     let receivedAcronym = try app.getResponse(to: acronymsURI, method: .POST, headers: ["Content-Type": "application/json"], data: acronym, decodeTo: Acronym.self)
@@ -77,7 +78,7 @@ final class AcronymTests : XCTestCase {
     XCTAssertEqual(acronyms[0].id, receivedAcronym.id)
   }
 
-  func testGettingASingleAcronymFromTheDatabase() throws {
+  func testGettingASingleAcronymFromTheAPI() throws {
     let acronym = try Acronym.create(short: acronymShort, long: acronymLong, on: conn)
 
     let returnedAcronym = try app.getResponse(to: "\(acronymsURI)\(acronym.id!)", decodeTo: Acronym.self)
@@ -108,7 +109,7 @@ final class AcronymTests : XCTestCase {
 
     XCTAssertEqual(acronyms.count, 1)
 
-    try app.sendRequest(to: "\(acronymsURI)\(acronym.id!)", method: .DELETE)
+    _ = try app.sendRequest(to: "\(acronymsURI)\(acronym.id!)", method: .DELETE)
     acronyms = try app.getResponse(to: acronymsURI, decodeTo: [Acronym].self)
 
     XCTAssertEqual(acronyms.count, 0)
@@ -173,8 +174,8 @@ final class AcronymTests : XCTestCase {
     let category2 = try Category.create(name: "Funny", on: conn)
     let acronym = try Acronym.create(on: conn)
 
-    try app.sendRequest(to: "\(acronymsURI)\(acronym.id!)/categories/\(category.id!)", method: .POST)
-    try app.sendRequest(to: "\(acronymsURI)\(acronym.id!)/categories/\(category2.id!)", method: .POST)
+    _ = try app.sendRequest(to: "\(acronymsURI)\(acronym.id!)/categories/\(category.id!)", method: .POST)
+    _ = try app.sendRequest(to: "\(acronymsURI)\(acronym.id!)/categories/\(category2.id!)", method: .POST)
 
     let categories = try app.getResponse(to: "\(acronymsURI)\(acronym.id!)/categories", decodeTo: [App.Category].self)
 
@@ -186,9 +187,9 @@ final class AcronymTests : XCTestCase {
   }
 
   static let allTests = [
-    ("testAcronymsCanBeRetrievedFromDatabase", testAcronymsCanBeRetrievedFromDatabase),
-    ("testAcronymCanBeSavedInDatabase", testAcronymCanBeSavedInDatabase),
-    ("testGettingASingleAcronymFromTheDatabase", testGettingASingleAcronymFromTheDatabase),
+    ("testAcronymsCanBeRetrievedFromAPI", testAcronymsCanBeRetrievedFromAPI),
+    ("testAcronymCanBeSavedWithAPI", testAcronymCanBeSavedWithAPI),
+    ("testGettingASingleAcronymFromTheAPI", testGettingASingleAcronymFromTheAPI),
     ("testUpdatingAnAcronym", testUpdatingAnAcronym),
     ("testDeletingAnAcronym", testDeletingAnAcronym),
     ("testSearchAcronymShort", testSearchAcronymShort),

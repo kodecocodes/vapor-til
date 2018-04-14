@@ -40,15 +40,16 @@ final class UserTests : XCTestCase {
   var conn: PostgreSQLConnection!
 
   override func setUp() {
+    try! Application.reset()
     app = try! Application.testable()
     conn = try! app.requestConnection(to: .psql).wait()
   }
 
   override func tearDown() {
-    try! app.teardown(connection: conn)
+    app.releaseConnection(conn, to: .psql)
   }
 
-  func testUsersCanBeRetrievedFromDatabase() throws {
+  func testUsersCanBeRetrievedFromAPI() throws {
     let user = try User.create(name: usersName, username: usersUsername, on: conn)
     _ = try User.create(on: conn)
 
@@ -60,7 +61,7 @@ final class UserTests : XCTestCase {
     XCTAssertEqual(users[0].id, user.id)
   }
 
-  func testUserCanBeSavedInDatabase() throws {
+  func testUserCanBeSavedWithAPI() throws {
     let user = User(name: usersName, username: usersUsername)
     let receivedUser = try app.getResponse(to: usersURI, method: .POST, headers: ["Content-Type": "application/json"], data: user, decodeTo: User.self)
 
@@ -76,7 +77,7 @@ final class UserTests : XCTestCase {
     XCTAssertEqual(users[0].id, receivedUser.id)
   }
 
-  func testGettingASingleUserFromTheDatabase() throws {
+  func testGettingASingleUserFromTheAPI() throws {
     let user = try User.create(name: usersName, username: usersUsername, on: conn)
     let receivedUser = try app.getResponse(to: "\(usersURI)\(user.id!)", decodeTo: User.self)
 
@@ -85,7 +86,7 @@ final class UserTests : XCTestCase {
     XCTAssertEqual(receivedUser.id, user.id)
   }
 
-  func testGettingAUsersAcronymsFromTheDatabase() throws {
+  func testGettingAUsersAcronymsFromTheAPI() throws {
     let user = try User.create(on: conn)
     let acronymShort = "OMG"
     let acronymLong = "Oh My God"
@@ -101,9 +102,9 @@ final class UserTests : XCTestCase {
   }
 
   static let allTests = [
-    ("testUsersCanBeRetrievedFromDatabase", testUsersCanBeRetrievedFromDatabase),
-    ("testUserCanBeSavedInDatabase", testUserCanBeSavedInDatabase),
-    ("testGettingASingleUserFromTheDatabase", testGettingASingleUserFromTheDatabase),
-    ("testGettingAUsersAcronymsFromTheDatabase", testGettingAUsersAcronymsFromTheDatabase),
+    ("testUsersCanBeRetrievedFromAPI", testUsersCanBeRetrievedFromAPI),
+    ("testUserCanBeSavedWithAPI", testUserCanBeSavedWithAPI),
+    ("testGettingASingleUserFromTheAPI", testGettingASingleUserFromTheAPI),
+    ("testGettingAUsersAcronymsFromTheAPI", testGettingAUsersAcronymsFromTheAPI),
     ]
 }
