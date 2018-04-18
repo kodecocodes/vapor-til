@@ -96,4 +96,6 @@ public func configure(
   var commandConfig = CommandConfig.default()
   commandConfig.use(RevertCommand.self, as: "revert")
   services.register(commandConfig)
+
+  config.prefer(LeafRenderer.self, for: TemplateRenderer.self)
 }
