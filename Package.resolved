@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/vapor/console.git",
         "state": {
           "branch": null,
-          "revision": "038e30ec9004fb1915d14d964a3facc1ec5c80f4",
-          "version": "3.0.0"
+          "revision": "30f102dcf4d18862a14df9f65c4b91d117005926",
+          "version": "3.0.1"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/vapor/core.git",
         "state": {
           "branch": null,
-          "revision": "ce64e70a48adf54835d040ba4c4dab431e2cd020",
-          "version": "3.1.1"
+          "revision": "c61a29ef08e7c8b3e836954269678c5a8fa31f3f",
+          "version": "3.1.2"
         }
       },
       {
@@ -38,21 +38,12 @@
         }
       },
       {
-        "package": "Engine",
-        "repositoryURL": "https://github.com/vapor/engine.git",
-        "state": {
-          "branch": null,
-          "revision": "2419e37d689b78c9197b2f38cd8f2901cd7dcf9e",
-          "version": "3.0.0-rc.2.3.1"
-        }
-      },
-      {
         "package": "Fluent",
         "repositoryURL": "https://github.com/vapor/fluent.git",
         "state": {
           "branch": null,
-          "revision": "eb63485dfd6fbd0773a25e1b94830fbcedaa8266",
-          "version": "3.0.0-rc.2.3.1"
+          "revision": "55f0e6f363050517e631113f17b57acbbfa55d04",
+          "version": "3.0.0-rc.2.3.3"
         }
       },
       {
@@ -62,6 +53,15 @@
           "branch": null,
           "revision": "495db9b9113cfbdf80377801c0f1cf7a95ebf05e",
           "version": "1.0.0-rc.2.1"
+        }
+      },
+      {
+        "package": "HTTP",
+        "repositoryURL": "https://github.com/vapor/http.git",
+        "state": {
+          "branch": null,
+          "revision": "76474b2046af51ca70f6d94476c0a9126d1c3d5d",
+          "version": "3.0.1"
         }
       },
       {
@@ -87,8 +87,8 @@
         "repositoryURL": "https://github.com/vapor/postgresql.git",
         "state": {
           "branch": null,
-          "revision": "64f9c20cae08113a022341dee27c5bbfc2607c2c",
-          "version": "1.0.0-rc.2.0.2"
+          "revision": "388346471c6a89c2695235d8ffff43c5941283af",
+          "version": "1.0.0-rc.2.0.3"
         }
       },
       {
@@ -96,8 +96,8 @@
         "repositoryURL": "https://github.com/vapor/routing.git",
         "state": {
           "branch": null,
-          "revision": "2fc1d4de22a54848b35ad17b3e7f7816f19ebf90",
-          "version": "3.0.0-rc.2"
+          "revision": "0ace2ad08dc763f5e0989d1cd199aa3c2f90e747",
+          "version": "3.0.0"
         }
       },
       {
@@ -114,8 +114,8 @@
         "repositoryURL": "https://github.com/apple/swift-nio.git",
         "state": {
           "branch": null,
-          "revision": "3275ff7c9c791a628631c2c51b39fd94346b2492",
-          "version": "1.4.2"
+          "revision": "902b18df16897da644724bd4b85b4bbe952ac9c6",
+          "version": "1.5.1"
         }
       },
       {
@@ -155,6 +155,15 @@
         }
       },
       {
+        "package": "URLEncodedForm",
+        "repositoryURL": "https://github.com/vapor/url-encoded-form.git",
+        "state": {
+          "branch": null,
+          "revision": "8448fa943057c01220f6a940d3b1b8e9fd92a96e",
+          "version": "1.0.2"
+        }
+      },
+      {
         "package": "Validation",
         "repositoryURL": "https://github.com/vapor/validation.git",
         "state": {
@@ -168,8 +177,17 @@
         "repositoryURL": "https://github.com/vapor/vapor.git",
         "state": {
           "branch": null,
-          "revision": "26b5c4032f236cc78e6fd3a51ac6d8aceb5a3a4f",
-          "version": "3.0.0-rc.2.4.1"
+          "revision": "aec1e789cf282e4ef06826baca83fd10c03662a2",
+          "version": "3.0.0-rc.2.7"
+        }
+      },
+      {
+        "package": "WebSocket",
+        "repositoryURL": "https://github.com/vapor/websocket.git",
+        "state": {
+          "branch": null,
+          "revision": "23acd21aa37a200faa2f5d5525c974efa6b5676c",
+          "version": "1.0.0"
         }
       }
     ]

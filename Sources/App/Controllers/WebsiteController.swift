@@ -54,7 +54,7 @@ struct WebsiteController: RouteCollection {
   }
 
   func acronymHandler(_ req: Request) throws -> Future<View> {
-    return try req.parameter(Acronym.self).flatMap(to: View.self) { acronym in
+    return try req.parameters.next(Acronym.self).flatMap(to: View.self) { acronym in
       return try acronym.user.get(on: req).flatMap(to: View.self) { user in
         let context = try AcronymContext(title: acronym.short, acronym: acronym, user: user, categories: acronym.categories.query(on: req).all())
         return try req.make(LeafRenderer.self).render("acronym", context)
@@ -63,7 +63,7 @@ struct WebsiteController: RouteCollection {
   }
 
   func userHandler(_ req: Request) throws -> Future<View> {
-    return try req.parameter(User.self).flatMap(to: View.self) { user in
+    return try req.parameters.next(User.self).flatMap(to: View.self) { user in
       return try user.acronyms.query(on: req).all().flatMap(to: View.self) { acronyms in
         let context = UserContext(title: user.name, user: user, acronyms: acronyms)
         return try req.make(LeafRenderer.self).render("user", context)
@@ -84,7 +84,7 @@ struct WebsiteController: RouteCollection {
   }
 
   func categoryHandler(_ req: Request) throws -> Future<View> {
-    return try req.parameter(Category.self).flatMap(to: View.self) { category in
+    return try req.parameters.next(Category.self).flatMap(to: View.self) { category in
       let context = try CategoryContext(title: category.name, category: category, acronyms: category.acronyms.query(on: req).all())
       return try req.view().render("category", context)
     }
@@ -111,14 +111,14 @@ struct WebsiteController: RouteCollection {
   }
 
   func editAcronymHandler(_ req: Request) throws -> Future<View> {
-    return try req.parameter(Acronym.self).flatMap(to: View.self) { acronym in
+    return try req.parameters.next(Acronym.self).flatMap(to: View.self) { acronym in
       let context = try EditAcronymContext(acronym: acronym, users: User.query(on: req).all(), categories: acronym.categories.query(on: req).all())
       return try req.view().render("createAcronym", context)
     }
   }
 
   func editAcronymPostHandler(_ req: Request) throws -> Future<Response> {
-    return try flatMap(to: Response.self, req.parameter(Acronym.self), req.content.decode(CreateAcronymData.self)) { acronym, data in
+    return try flatMap(to: Response.self, req.parameters.next(Acronym.self), req.content.decode(CreateAcronymData.self)) { acronym, data in
       acronym.short = data.short
       acronym.long = data.long
       acronym.userID = data.userID
@@ -154,7 +154,7 @@ struct WebsiteController: RouteCollection {
   }
 
   func deleteAcronymHandler(_ req: Request) throws -> Future<Response> {
-    return try req.parameter(Acronym.self).delete(on: req).transform(to: req.redirect(to: "/"))
+    return try req.parameters.next(Acronym.self).delete(on: req).transform(to: req.redirect(to: "/"))
   }
 }
 

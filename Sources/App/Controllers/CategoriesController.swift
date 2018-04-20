@@ -46,11 +46,11 @@ struct CategoriesController: RouteCollection {
   }
 
   func getHandler(_ req: Request) throws -> Future<Category> {
-    return try req.parameter(Category.self)
+    return try req.parameters.next(Category.self)
   }
 
   func getAcronymsHandler(_ req: Request) throws -> Future<[Acronym]> {
-    return try req.parameter(Category.self).flatMap(to: [Acronym].self) { category in
+    return try req.parameters.next(Category.self).flatMap(to: [Acronym].self) { category in
       try category.acronyms.query(on: req).all()
     }
   }
