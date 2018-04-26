@@ -55,7 +55,7 @@ public func configure(
   services.register(middlewares)
 
   // Configure a database
-  var databases = DatabaseConfig()
+  var databases = DatabasesConfig()
   let databaseConfig: PostgreSQLDatabaseConfig
   if let url = Environment.get("DATABASE_URL") {
     databaseConfig = try PostgreSQLDatabaseConfig(url: url)
