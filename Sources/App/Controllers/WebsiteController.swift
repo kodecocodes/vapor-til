@@ -49,7 +49,7 @@ struct WebsiteController: RouteCollection {
     return Acronym.query(on: req).all().flatMap(to: View.self) { acronyms in
       let acronymsData = acronyms.isEmpty ? nil : acronyms
       let context = IndexContext(title: "Homepage", acronyms: acronymsData)
-      return try req.make(LeafRenderer.self).render("index", context)
+      return try req.view().render("index", context)
     }
   }
 
@@ -57,7 +57,7 @@ struct WebsiteController: RouteCollection {
     return try req.parameters.next(Acronym.self).flatMap(to: View.self) { acronym in
       return try acronym.user.get(on: req).flatMap(to: View.self) { user in
         let context = try AcronymContext(title: acronym.short, acronym: acronym, user: user, categories: acronym.categories.query(on: req).all())
-        return try req.make(LeafRenderer.self).render("acronym", context)
+        return try req.view().render("acronym", context)
       }
     }
   }
@@ -66,7 +66,7 @@ struct WebsiteController: RouteCollection {
     return try req.parameters.next(User.self).flatMap(to: View.self) { user in
       return try user.acronyms.query(on: req).all().flatMap(to: View.self) { acronyms in
         let context = UserContext(title: user.name, user: user, acronyms: acronyms)
-        return try req.make(LeafRenderer.self).render("user", context)
+        return try req.view().render("user", context)
       }
     }
   }
@@ -74,7 +74,7 @@ struct WebsiteController: RouteCollection {
   func allUsersHandler(_ req: Request) throws -> Future<View> {
     return User.query(on: req).all().flatMap(to: View.self) { users in
       let context = AllUsersContext(title: "All Users", users: users)
-      return try req.make(LeafRenderer.self).render("allUsers", context)
+      return try req.view().render("allUsers", context)
     }
   }
 

@@ -50,7 +50,6 @@ public func configure(
   // Register middleware
   var middlewares = MiddlewareConfig() // Create _empty_ middleware config
   middlewares.use(FileMiddleware.self) // Serves files from `Public/` directory
-  middlewares.use(DateMiddleware.self) // Adds `Date` header to responses
   middlewares.use(ErrorMiddleware.self) // Catches errors and converts to HTTP response
   services.register(middlewares)
 
@@ -97,5 +96,5 @@ public func configure(
   commandConfig.use(RevertCommand.self, as: "revert")
   services.register(commandConfig)
 
-  config.prefer(LeafRenderer.self, for: TemplateRenderer.self)
+  config.prefer(LeafRenderer.self, for: ViewRenderer.self)
 }
