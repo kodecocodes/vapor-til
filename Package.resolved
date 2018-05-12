@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "Auth",
+        "repositoryURL": "https://github.com/vapor/auth.git",
+        "state": {
+          "branch": null,
+          "revision": "c8594a4026924483d3906e7cebf5084ae83efcbf",
+          "version": "2.0.0-rc.4"
+        }
+      },
+      {
         "package": "Console",
         "repositoryURL": "https://github.com/vapor/console.git",
         "state": {
@@ -15,8 +24,8 @@
         "repositoryURL": "https://github.com/vapor/core.git",
         "state": {
           "branch": null,
-          "revision": "efe79e4f59445b661ba7e6511c2a0b80645c2e72",
-          "version": "3.1.6"
+          "revision": "a909eccc41941faac6fb9e511cdb9a5cb30a05de",
+          "version": "3.1.7"
         }
       },
       {
@@ -51,8 +60,8 @@
         "repositoryURL": "https://github.com/vapor/fluent-postgresql.git",
         "state": {
           "branch": null,
-          "revision": "6e20e6ab78760903464908bc3cf7d9c8b77f4066",
-          "version": "1.0.0-rc.2.2.1"
+          "revision": "8324bf0fc1437701f8963fb340c199c66079c90e",
+          "version": "1.0.0-rc.2.3"
         }
       },
       {
@@ -87,8 +96,8 @@
         "repositoryURL": "https://github.com/vapor/postgresql.git",
         "state": {
           "branch": null,
-          "revision": "dfc03db659141b2e0c1130ce7c87c6ad2315fe7b",
-          "version": "1.0.0-rc.2.1"
+          "revision": "bcbf90c9f40ab57e3800a2fd96dd77371c32e46a",
+          "version": "1.0.0-rc.2.2"
         }
       },
       {
@@ -168,8 +177,8 @@
         "repositoryURL": "https://github.com/vapor/url-encoded-form.git",
         "state": {
           "branch": null,
-          "revision": "8448fa943057c01220f6a940d3b1b8e9fd92a96e",
-          "version": "1.0.2"
+          "revision": "57cf7fb9c1a1014c50bc05123684a9139ad44127",
+          "version": "1.0.3"
         }
       },
       {
@@ -186,8 +195,8 @@
         "repositoryURL": "https://github.com/vapor/vapor.git",
         "state": {
           "branch": null,
-          "revision": "821184be792dfa144a82fe379784e04eb9dad1eb",
-          "version": "3.0.1"
+          "revision": "8c73eebf7c41c7d8bf83ff87f550e0f97d6aadc4",
+          "version": "3.0.2"
         }
       },
       {
@@ -195,8 +204,8 @@
         "repositoryURL": "https://github.com/vapor/websocket.git",
         "state": {
           "branch": null,
-          "revision": "23acd21aa37a200faa2f5d5525c974efa6b5676c",
-          "version": "1.0.0"
+          "revision": "141cb4d3814dc8062cb0b2f43e72801b5dfcf272",
+          "version": "1.0.1"
         }
       }
     ]
