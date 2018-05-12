@@ -92,7 +92,7 @@ public func configure(
   migrations.add(model: Category.self, database: .psql)
   migrations.add(model: AcronymCategoryPivot.self, database: .psql)
   migrations.add(model: Token.self, database: .psql)
-//  migrations.add(migration: AdminUser.self, database: .psql)
+  migrations.add(migration: AdminUser.self, database: .psql)
   services.register(migrations)
 
   // Configure the rest of your application here
