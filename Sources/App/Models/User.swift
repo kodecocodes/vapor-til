@@ -116,3 +116,6 @@ struct AdminUser: Migration {
       return Future.map(on: connection) {}
   }
 }
+
+extension User: PasswordAuthenticatable {}
+extension User: SessionAuthenticatable {}
