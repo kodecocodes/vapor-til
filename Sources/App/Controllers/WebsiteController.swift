@@ -44,6 +44,8 @@ struct WebsiteController: RouteCollection {
     authSessionRoutes.get("login", use: loginHandler)
     authSessionRoutes.post(LoginPostData.self, at: "login", use: loginPostHandler)
     authSessionRoutes.post("logout", use: logoutHandler)
+    authSessionRoutes.get("register", use: registerHandler)
+    authSessionRoutes.post(RegisterData.self, at: "register", use: registerPostHandler)
 
     let protectedRoutes = authSessionRoutes.grouped(RedirectMiddleware<User>(path: "/login"))
     protectedRoutes.get("acronyms", "create", use: createAcronymHandler)
@@ -194,6 +196,31 @@ struct WebsiteController: RouteCollection {
     try req.unauthenticateSession(User.self)
     return req.redirect(to: "/")
   }
+
+  func registerHandler(_ req: Request) throws -> Future<View> {
+    var context = RegisterContext()
+    if req.query[Bool.self, at: "error"] != nil {
+      context.registrationError = true
+    }
+    return try req.view().render("register", context)
+  }
+
+  func registerPostHandler(_ req: Request, data: RegisterData) throws -> Future<Response> {
+    do {
+      try data.validate()
+    } catch {
+      return Future.map(on: req) {
+        req.redirect(to: "/register?error=true")
+      }
+    }
+    let password = try BCrypt.hash(data.password)
+    let user = User(name: data.name, username: data.username, password: password)
+    return user.save(on: req).map(to: Response.self) { user in
+      try req.authenticateSession(user)
+      return req.redirect(to: "/")
+    }
+  }
+
 }
 
 struct IndexContext: Encodable {
@@ -258,4 +285,31 @@ struct LoginContext: Encodable {
 struct LoginPostData: Content {
   let username: String
   let password: String
+}
+
+struct RegisterContext: Encodable {
+  let title = "Register"
+  var registrationError = false
+}
+
+struct RegisterData: Content {
+  let name: String
+  let username: String
+  let password: String
+  let confirmPassword: String
+}
+
+extension RegisterData: Validatable, Reflectable {
+  static func validations() throws -> Validations<RegisterData> {
+    var validations = Validations(RegisterData.self)
+    try validations.add(\.name, .ascii)
+    try validations.add(\.username, .alphanumeric && .count(3...))
+    try validations.add(\.password, .count(8...))
+    validations.add("passwords match") { model in
+      guard model.password == model.confirmPassword else {
+        throw BasicValidationError("passwords don't match")
+      }
+    }
+    return validations
+  }
 }
