@@ -33,7 +33,7 @@ import Authentication
 struct ImperialController: RouteCollection {
   func boot(router: Router) throws {
     let callbackURL: String
-    if try Environment.detect() == .production {
+    if try Environment.detect().isRelease {
       callbackURL = "https://rw-til.vapor.cloud/oauth/google"
     } else {
       callbackURL = "http://localhost:8080/oauth/google"
