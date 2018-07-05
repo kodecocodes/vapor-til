@@ -34,7 +34,7 @@ struct ImperialController: RouteCollection {
   func boot(router: Router) throws {
     let callbackURL: String
     if try Environment.detect() == .production {
-      callbackURL = "https://<YOUR_VAPOR_CLOUD_URL>/oauth/google"
+      callbackURL = "https://rw-til.vapor.cloud/oauth/google"
     } else {
       callbackURL = "http://localhost:8080/oauth/google"
     }
