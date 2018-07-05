@@ -60,7 +60,10 @@ public func configure(
   var databases = DatabasesConfig()
   let databaseConfig: PostgreSQLDatabaseConfig
   if let url = Environment.get("DATABASE_URL") {
-    databaseConfig = try PostgreSQLDatabaseConfig(url: url)
+    guard let urlConfig = try PostgreSQLDatabaseConfig(url: url) else {
+      fatalError("Failed to create PostgresConfig")
+    }
+    databaseConfig = urlConfig
   } else {
     let databaseName: String
     let databasePort: Int
