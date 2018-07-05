@@ -32,11 +32,8 @@ import Authentication
 
 struct ImperialController: RouteCollection {
   func boot(router: Router) throws {
-    let callbackURL: String
-    if try Environment.detect() == .production {
-      callbackURL = "https://rw-til.vapor.cloud/oauth/google"
-    } else {
-      callbackURL = "http://localhost:8080/oauth/google"
+    guard let callbackURL = Environment.get("GOOGLE_CALLBACK_URL") else {
+      fatalError("Callback URL not set")
     }
     try router.oAuth(from: Google.self, authenticate: "login-google", callback: callbackURL, scope: ["profile", "email"], completion: processGoogleLogin)
   }
