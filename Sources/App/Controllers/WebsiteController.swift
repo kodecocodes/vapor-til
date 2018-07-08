@@ -67,7 +67,7 @@ struct WebsiteController: RouteCollection {
 
   func acronymHandler(_ req: Request) throws -> Future<View> {
     return try req.parameters.next(Acronym.self).flatMap(to: View.self) { acronym in
-      return try acronym.user.get(on: req).flatMap(to: View.self) { user in
+      return acronym.user.get(on: req).flatMap(to: View.self) { user in
         let context = try AcronymContext(title: acronym.short, acronym: acronym, user: user, categories: acronym.categories.query(on: req).all())
         return try req.view().render("acronym", context)
       }

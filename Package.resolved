@@ -60,8 +60,8 @@
         "repositoryURL": "https://github.com/vapor/fluent-postgresql.git",
         "state": {
           "branch": null,
-          "revision": "2a5b8d147d6937d3cca0951864fcf000590e099e",
-          "version": "1.0.0-rc.4.0.2"
+          "revision": "b5da9d5ba48314092c1f401cc50b0f0263288181",
+          "version": "1.0.0-rc.4.1"
         }
       },
       {
@@ -114,8 +114,8 @@
         "repositoryURL": "https://github.com/vapor/postgresql.git",
         "state": {
           "branch": null,
-          "revision": "c34533ebf7ae34cff1430a2803c83a02bb98557a",
-          "version": "1.0.0-rc.4.2.1"
+          "revision": "7d87337846887b3c4a207a603add98289ffd5f76",
+          "version": "1.0.0-rc.4.3"
         }
       },
       {
@@ -213,8 +213,8 @@
         "repositoryURL": "https://github.com/vapor/vapor.git",
         "state": {
           "branch": null,
-          "revision": "74a46ecacca51d326a1e8cf4b7967827765f05bf",
-          "version": "3.0.5"
+          "revision": "6b07105a3899fbbae194ee3eb82f54debe502221",
+          "version": "3.0.6"
         }
       },
       {
