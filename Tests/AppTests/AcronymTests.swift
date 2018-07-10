@@ -184,6 +184,11 @@ final class AcronymTests : XCTestCase {
     XCTAssertEqual(categories[0].name, category.name)
     XCTAssertEqual(categories[1].id, category2.id)
     XCTAssertEqual(categories[1].name, category2.name)
+
+    _ = try app.sendRequest(to: "\(acronymsURI)\(acronym.id!)/categories/\(category.id!)", method: .DELETE, loggedInRequest: true)
+    let newCategories = try app.getResponse(to: "\(acronymsURI)\(acronym.id!)/categories", decodeTo: [App.Category].self)
+
+    XCTAssertEqual(newCategories.count, 1)
   }
 
   static let allTests = [
