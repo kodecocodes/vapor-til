@@ -51,6 +51,8 @@ extension Application {
   static func reset() throws {
     let revertEnvironment = ["vapor", "revert", "--all", "-y"]
     try Application.testable(envArgs: revertEnvironment).asyncRun().wait()
+    let migrateEnvironment = ["vapor", "migrate", "-y"]
+    try Application.testable(envArgs: migrateEnvironment).asyncRun().wait()
   }
 
   func sendRequest<T>(to path: String, method: HTTPMethod, headers: HTTPHeaders = .init(), body: T? = nil, loggedInRequest: Bool = false, loggedInUser: User? = nil) throws -> Response where T: Content {
