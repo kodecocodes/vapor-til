@@ -175,7 +175,24 @@ struct WebsiteController: RouteCollection {
   }
 
   func deleteAcronymHandler(_ req: Request) throws -> Future<Response> {
-    return try req.parameters.next(Acronym.self).delete(on: req).transform(to: req.redirect(to: "/"))
+	return try req.parameters.next(Acronym.self)
+		.flatMap(to: Response.self, { acronym in
+			let categories = try acronym.categories.query(on: req).all()
+			
+			return categories.flatMap(to: Response.self, { categories in
+				
+				var operations: [Future<Void>] = []
+				
+				for category in categories {
+					operations.append(acronym.categories.detach(category, on: req))
+				}
+				
+				operations.append(acronym.delete(on: req))
+				
+				return operations.flatten(on: req)
+					.transform(to: req.redirect(to: "/"))
+			})
+		})
   }
 
   func loginHandler(_ req: Request) throws -> Future<View> {
