@@ -1,5 +1,3 @@
-// swift-tools-version:4.0
-
 /// Copyright (c) 2018 Razeware LLC
 ///
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,21 +26,31 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
-import PackageDescription
+import FluentPostgreSQL
 
-let package = Package(
-  name: "TILApp",
-  dependencies: [
-    .package(url: "https://github.com/vapor/vapor.git", from: "3.0.0"),
-    .package(url: "https://github.com/vapor/fluent-postgresql.git", from: "1.0.0"),
-    .package(url: "https://github.com/vapor/leaf.git", from: "3.0.0"),
-    .package(url: "https://github.com/vapor/auth.git", from: "2.0.0"),
-    .package(url: "https://github.com/vapor-community/Imperial.git", from: "0.7.1"),
-    .package(url: "https://github.com/vapor-community/sendgrid-provider.git", from: "3.0.0")
-  ],
-  targets: [
-    .target(name: "App", dependencies: ["FluentPostgreSQL", "Vapor", "Leaf", "Authentication", "Imperial", "SendGrid"]),
-    .target(name: "Run", dependencies: ["App"]),
-    .testTarget(name: "AppTests", dependencies: ["App"])
-  ]
-)
+final class ResetPasswordToken: Codable {
+  var id: UUID?
+  var token: String
+  var userID: User.ID
+  
+  init(token: String, userID: User.ID) {
+    self.token = token
+    self.userID = userID
+  }
+}
+
+extension ResetPasswordToken: PostgreSQLUUIDModel {}
+extension ResetPasswordToken: Migration {
+  static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {
+    return Database.create(self, on: connection) { builder in
+      try addProperties(to: builder)
+      builder.reference(from: \.userID, to: \User.id)
+    }
+  }
+}
+
+extension ResetPasswordToken {
+  var user: Parent<ResetPasswordToken, User> {
+    return parent(\.userID)
+  }
+}

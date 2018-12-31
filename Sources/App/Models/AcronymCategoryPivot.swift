@@ -28,7 +28,6 @@
 
 import FluentPostgreSQL
 import Foundation
-import Vapor
 
 final class AcronymCategoryPivot: PostgreSQLUUIDPivot, ModifiablePivot {
 
@@ -45,7 +44,6 @@ final class AcronymCategoryPivot: PostgreSQLUUIDPivot, ModifiablePivot {
     self.acronymID = try acronym.requireID()
     self.categoryID = try category.requireID()
   }
-
 }
 
 extension AcronymCategoryPivot: Migration {

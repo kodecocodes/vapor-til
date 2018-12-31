@@ -1,0 +1,24 @@
+#if(count(acronyms) > 0) {
+  <table class="table table-bordered table-hover">
+    <thead class="thead-light">
+      <tr>
+        <th>Short</th>
+        <th>Long</th>
+      </tr>
+    </thead>
+    <tbody>
+      #for(acronym in acronyms) {
+        <tr>
+          <td>
+            <a href="/acronyms/#(acronym.id)">
+              #(acronym.short)
+            </a>
+          </td>
+          <td>#(acronym.long)</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+} else {
+  <h2>There aren’t any acronyms yet!</h2>
+}

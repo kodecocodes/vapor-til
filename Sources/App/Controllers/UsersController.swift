@@ -35,6 +35,7 @@ struct UsersController: RouteCollection {
     usersRoute.get(use: getAllHandler)
     usersRoute.get(User.parameter, use: getHandler)
     usersRoute.get(User.parameter, "acronyms", use: getAcronymsHandler)
+
     let basicAuthMiddleware = User.basicAuthMiddleware(using: BCryptDigest())
     let basicAuthGroup = usersRoute.grouped(basicAuthMiddleware)
     basicAuthGroup.post("login", use: loginHandler)
@@ -70,4 +71,3 @@ struct UsersController: RouteCollection {
     return token.save(on: req)
   }
 }
-

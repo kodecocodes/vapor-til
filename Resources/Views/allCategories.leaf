@@ -6,14 +6,17 @@
     <table class="table table-bordered table-hover">
       <thead class="thead-light">
         <tr>
-          <th>
-            Name
-          </th>
+          <th>Name</th>
         </tr>
       </thead>
       <tbody>
+        #// 3
         #for(category in categories) {
-          <tr><td><a href="/categories/#(category.id)">#(category.name)</a></td></tr>
+          <tr>
+            <td>
+              <a href="/categories/#(category.id)">#(category.name)</a>
+            </td>
+          </tr>
         }
       </tbody>
     </table>

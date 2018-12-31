@@ -1,28 +1,19 @@
 #set("content") {
+
+  #if(user.profilePicture) {
+    <img src="/users/#(user.id)/profilePicture" alt="#(user.name)">
+  }
+
   <h1>#(user.name)</h1>
   <h2>#(user.username)</h2>
 
-  #if(count(acronyms) > 0) {
-    <table class="table table-bordered table-hover">
-      <thead class="thead-light">
-        <tr>
-          <th>
-            Short
-          </th>
-          <th>
-            Long
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        #for(acronym in acronyms) {
-          <tr><td><a href="/acronyms/#(acronym.id)">#(acronym.short)</a></td><td>#(acronym.long)</td></tr>
-        }
-      </tbody>
-    </table>
-  } else {
-    <h2>There aren't any acronyms yet!</h2>
+  #if(authenticatedUser) {
+    <a href="/users/#(user.id)/addProfilePicture">
+      #if(user.profilePicture){Update } else{Add } Profile Picture
+    </a>
   }
+
+  #embed("acronymsTable")
 }
 
 #embed("base")

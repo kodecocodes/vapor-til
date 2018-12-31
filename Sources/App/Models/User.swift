@@ -36,11 +36,15 @@ final class User: Codable {
   var name: String
   var username: String
   var password: String
+  var email: String
+  var profilePicture: String?
 
-  init(name: String, username: String, password: String) {
+  init(name: String, username: String, password: String, email: String, profilePicture: String?) {
     self.name = name
     self.username = username
     self.password = password
+    self.email = email
+    self.profilePicture = profilePicture
   }
 
   final class Public: Codable {
@@ -58,11 +62,13 @@ final class User: Codable {
 
 extension User: PostgreSQLUUIDModel {}
 extension User: Content {}
+
 extension User: Migration {
   static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {
     return Database.create(self, on: connection) { builder in
       try addProperties(to: builder)
       builder.unique(on: \.username)
+      builder.unique(on: \.email)
     }
   }
 }
@@ -100,20 +106,20 @@ extension User: TokenAuthenticatable {
 }
 
 struct AdminUser: Migration {
-
   typealias Database = PostgreSQLDatabase
 
   static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {
-      let password = try? BCrypt.hash("password")
-      guard let hashedPassword = password else {
-        fatalError("Failed to create admin user")
-      }
-      let user = User(name: "Admin", username: "admin", password: hashedPassword)
-      return user.save(on: connection).transform(to: ())
+    let password = try? BCrypt.hash("password")
+    guard let hashedPassword = password else {
+      fatalError("Failed to create admin user")
+    }
+    let user = User(name: "Admin", username: "admin", password: hashedPassword,
+                    email: "admin@localhost.local", profilePicture: nil)
+    return user.save(on: connection).transform(to: ())
   }
 
   static func revert(on connection: PostgreSQLConnection) -> Future<Void> {
-      return Future.map(on: connection) {}
+    return .done(on: connection)
   }
 }
 

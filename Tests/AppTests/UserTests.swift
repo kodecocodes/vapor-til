@@ -31,11 +31,11 @@ import Vapor
 import XCTest
 import FluentPostgreSQL
 
-final class UserTests : XCTestCase {
+final class UserTests: XCTestCase {
 
-  let usersURI = "/api/users/"
   let usersName = "Alice"
   let usersUsername = "alicea"
+  let usersURI = "/api/users/"
   var app: Application!
   var conn: PostgreSQLConnection!
 
@@ -63,8 +63,14 @@ final class UserTests : XCTestCase {
   }
 
   func testUserCanBeSavedWithAPI() throws {
-    let user = User(name: usersName, username: usersUsername, password: "password")
-    let receivedUser = try app.getResponse(to: usersURI, method: .POST, headers: ["Content-Type": "application/json"], data: user, decodeTo: User.Public.self, loggedInRequest: true)
+    let user = User(name: usersName, username: usersUsername, password: "password", email: "\(usersUsername)@test.com", profilePicture: nil)
+    let receivedUser = try app.getResponse(
+      to: usersURI,
+      method: .POST,
+      headers: ["Content-Type": "application/json"],
+      data: user,
+      decodeTo: User.Public.self,
+      loggedInRequest: true)
 
     XCTAssertEqual(receivedUser.name, usersName)
     XCTAssertEqual(receivedUser.username, usersUsername)
@@ -91,10 +97,13 @@ final class UserTests : XCTestCase {
     let user = try User.create(on: conn)
     let acronymShort = "OMG"
     let acronymLong = "Oh My God"
-    let acronym1 = try Acronym.create(short: acronymShort, long: acronymLong, user: user, on: conn)
+    let acronym1 = try Acronym.create(short: acronymShort, long: acronymLong,
+                                      user: user, on: conn)
     _ = try Acronym.create(short: "LOL", long: "Laugh Out Loud", user: user, on: conn)
 
-    let acronyms = try app.getResponse(to: "\(usersURI)\(user.id!)/acronyms", decodeTo: [Acronym].self)
+    let acronyms = try app.getResponse(
+      to: "\(usersURI)\(user.id!)/acronyms",
+      decodeTo: [Acronym].self)
 
     XCTAssertEqual(acronyms.count, 2)
     XCTAssertEqual(acronyms[0].id, acronym1.id)
@@ -106,6 +115,6 @@ final class UserTests : XCTestCase {
     ("testUsersCanBeRetrievedFromAPI", testUsersCanBeRetrievedFromAPI),
     ("testUserCanBeSavedWithAPI", testUserCanBeSavedWithAPI),
     ("testGettingASingleUserFromTheAPI", testGettingASingleUserFromTheAPI),
-    ("testGettingAUsersAcronymsFromTheAPI", testGettingAUsersAcronymsFromTheAPI),
-    ]
+    ("testGettingAUsersAcronymsFromTheAPI", testGettingAUsersAcronymsFromTheAPI)
+  ]
 }

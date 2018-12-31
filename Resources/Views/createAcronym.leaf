@@ -1,5 +1,5 @@
 #set("content") {
-  <h1>#if(editing){Edit Acronym} else{Create An Acronym}</h1>
+  <h1>#(title)</h1>
 
   <form method="post">
     #if(csrfToken) {
@@ -8,26 +8,33 @@
 
     <div class="form-group">
       <label for="short">Acronym</label>
-      <input type="text" name="short" class="form-control" id="short" #if(editing){value="#(acronym.short)"}/>
+      <input type="text" name="short" class="form-control"
+       id="short" #if(editing){value="#(acronym.short)"}/>
     </div>
 
     <div class="form-group">
       <label for="long">Meaning</label>
-      <input type="text" name="long" class="form-control" id="long" #if(editing){value="#(acronym.long)"}/>
+      <input type="text" name="long" class="form-control"
+       id="long" #if(editing){value="#(acronym.long)"}/>
     </div>
 
     <div class="form-group">
       <label for="categories">Categories</label>
-      <select name="categories[]" class="form-control" id="categories" placeholder="Categories" multiple="multiple">
-        #if(editing) {
-          #for(category in categories) {
-            <option value="#(category.name)" selected="selected">#(category.name)</option>
-          }
+      <select name="categories[]" class="form-control"
+       id="categories" placeholder="Categories" multiple="multiple">
+       #if(editing) {
+         #for(category in categories) {
+           <option value="#(category.name)" selected="selected">
+             #(category.name)
+           </option>
+         }
         }
       </select>
     </div>
 
-    <button type="submit" class="btn btn-primary">#if(editing){Update} else{Submit}</button>
+    <button type="submit" class="btn btn-primary">
+      #if(editing){Update} else{Submit}
+    </button>
   </form>
 }
 
