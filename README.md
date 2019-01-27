@@ -1,6 +1,6 @@
 <p align="center">
     <a href="http://www.raywenderlich.com/">
-        <img src="https://scontent-lht6-1.xx.fbcdn.net/v/t1.0-9/14055075_1130689040310720_998806737720796699_n.png?_nc_cat=0&oh=acc7ba1b3f29fcb5df68ec238e4df95e&oe=5B72EB63" width="200" alt="raywenderlich.com">
+        <img src="https://user-images.githubusercontent.com/9938337/51800584-21591300-2229-11e9-85f6-33d1203ee095.png" width="200" alt="raywenderlich.com">
     </a>
     <br>
     <br>
