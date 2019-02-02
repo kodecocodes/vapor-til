@@ -32,9 +32,9 @@ import Authentication
 import SendGrid
 
 struct WebsiteController: RouteCollection {
-  
+
   let imageFolder = "ProfilePictures/"
-  
+
   func boot(router: Router) throws {
     let authSessionRoutes = router.grouped(User.authSessionsMiddleware())
     authSessionRoutes.get(use: indexHandler)
@@ -125,7 +125,7 @@ struct WebsiteController: RouteCollection {
   func createAcronymPostHandler(_ req: Request, data: CreateAcronymData) throws -> Future<Response> {
     let expectedToken = try req.session()["CSRF_TOKEN"]
     try req.session()["CSRF_TOKEN"] = nil
-    guard expectedToken == data.csrfToken else {
+    guard let csrfToken = data.csrfToken, expectedToken == csrfToken else {
       throw Abort(.badRequest)
     }
     let user = try req.requireAuthenticated(User.self)
@@ -254,18 +254,18 @@ struct WebsiteController: RouteCollection {
       return req.redirect(to: "/")
     }
   }
-  
+
   func forgottenPasswordHandler(_ req: Request) throws -> Future<View> {
     return try req.view().render("forgottenPassword", ["title": "Reset Your Password"])
   }
-  
+
   func forgottenPasswordPostHandler(_ req: Request) throws -> Future<View> {
     let email = try req.content.syncGet(String.self, at: "email")
     return User.query(on: req).filter(\.email == email).first().flatMap(to: View.self) { user in
       guard let user = user else {
         return try req.view().render("forgottenPasswordConfirmed", ["title": "Password Reset Email Sent"])
       }
-      
+
       let resetTokenString = try CryptoRandom().generateData(count: 32).base32EncodedString()
       let resetToken = try ResetPasswordToken(token: resetTokenString, userID: user.requireID())
       return resetToken.save(on: req).flatMap(to: View.self) { _ in
@@ -284,7 +284,7 @@ struct WebsiteController: RouteCollection {
       }
     }
   }
-  
+
   func resetPasswordHandler(_ req: Request) throws -> Future<View> {
     guard let token = req.query[String.self, at: "token"] else {
       return try req.view().render("resetPassword", ResetPasswordContext(error: true))
@@ -303,7 +303,7 @@ struct WebsiteController: RouteCollection {
       try req.view().render("resetPassword", ResetPasswordContext())
     }
   }
-  
+
   func resetPasswordPostHandler(_ req: Request, data: ResetPasswordData) throws -> Future<Response> {
     guard data.password == data.confirmPassword else {
       return try req.view().render("resetPassword", ResetPasswordContext(error: true)).encode(for: req)
@@ -314,11 +314,11 @@ struct WebsiteController: RouteCollection {
     resetPasswordUser.password = newPassword
     return resetPasswordUser.save(on: req).transform(to: req.redirect(to: "/login"))
   }
-  
+
   func addProfilePictureHandler(_ req: Request) throws -> Future<View> {
     return try req.view().render("addProfilePicture", ["title": "Add Profile Picture"])
   }
-  
+
   func addProfilePicturePostHandler(_ req: Request) throws -> Future<Response> {
     return try flatMap(to: Response.self, req.parameters.next(User.self), req.content.decode(ImageUploadData.self)) { user, imageData in
       let workPath = try req.make(DirectoryConfig.self).workDir
@@ -330,7 +330,7 @@ struct WebsiteController: RouteCollection {
       return user.save(on: req).transform(to: redirect)
     }
   }
-  
+
   func getUsersProfilePictureHandler(_ req: Request) throws -> Future<Response> {
     return try req.parameters.next(User.self).flatMap(to: Response.self) { user in
       guard let filename = user.profilePicture else {
@@ -395,7 +395,7 @@ struct CreateAcronymData: Content {
   let short: String
   let long: String
   let categories: [String]?
-  let csrfToken: String
+  let csrfToken: String?
 }
 
 struct LoginContext: Encodable {
@@ -448,7 +448,7 @@ extension RegisterData: Validatable, Reflectable {
 struct ResetPasswordContext: Encodable {
   let title = "Reset Password"
   let error: Bool?
-  
+
   init(error: Bool? = false) {
     self.error = error
   }
