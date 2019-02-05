@@ -57,6 +57,8 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
   let databaseConfig: PostgreSQLDatabaseConfig
   if let url = Environment.get("DATABASE_URL") {
     databaseConfig = PostgreSQLDatabaseConfig(url: url)!
+  } else if let url = Environment.get("DB_POSTGRESQL") {
+    databaseConfig = PostgreSQLDatabaseConfig(url: url)!
   } else {
     let hostname = Environment.get("DATABASE_HOSTNAME") ?? "localhost"
     let username = Environment.get("DATABASE_USER") ?? "vapor"
