@@ -33,14 +33,14 @@ import Crypto
 extension User {
   static func create(name: String = "Luke", username: String? = nil,
                      on connection: PostgreSQLConnection) throws -> User {
-    var createUsername: String
+    let createUsername: String
     if let suppliedUsername = username {
       createUsername = suppliedUsername
     } else {
       createUsername = UUID().uuidString
     }
     let password = try BCrypt.hash("password")
-    let user = User(name: name, username: createUsername, password: password, email: "\(createUsername)@test.com", profilePicture: nil)
+    let user = User(name: name, username: createUsername, password: password, email: "\(createUsername)@test.com")
     return try user.save(on: connection).wait()
   }
 }

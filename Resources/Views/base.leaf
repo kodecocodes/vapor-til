@@ -21,7 +21,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item #if(title == "Homepage"){active}">
+          <li class="nav-item #if(title == "Home page"){active}">
             <a href="/" class="nav-link">Home</a>
           </li>
           <li class="nav-item #if(title == "All Users"){active}">
@@ -41,7 +41,7 @@
         </ul>
         #if(userLoggedIn) {
           <form class="form-inline" action="/logout" method="POST">
-            <input class="nav-link btn btn-link" type="submit" value="Log out">
+            <input class="nav-link btn" type="submit" value="Log out">
           </form>
         }
       </div>

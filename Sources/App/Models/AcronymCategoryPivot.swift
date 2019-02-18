@@ -29,7 +29,7 @@
 import FluentPostgreSQL
 import Foundation
 
-final class AcronymCategoryPivot: PostgreSQLUUIDPivot, ModifiablePivot {
+final class AcronymCategoryPivot: PostgreSQLUUIDPivot {
 
   var id: UUID?
   var acronymID: Acronym.ID
@@ -45,6 +45,8 @@ final class AcronymCategoryPivot: PostgreSQLUUIDPivot, ModifiablePivot {
     self.categoryID = try category.requireID()
   }
 }
+
+extension AcronymCategoryPivot: ModifiablePivot {}
 
 extension AcronymCategoryPivot: Migration {
   static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {

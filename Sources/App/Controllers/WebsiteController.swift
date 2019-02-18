@@ -68,7 +68,7 @@ struct WebsiteController: RouteCollection {
     return Acronym.query(on: req).all().flatMap(to: View.self) { acronyms in
       let userLoggedIn = try req.isAuthenticated(User.self)
       let showCookieMessage = req.http.cookies["cookies-accepted"] == nil
-      let context = IndexContext(title: "Homepage", acronyms: acronyms, userLoggedIn: userLoggedIn,
+      let context = IndexContext(title: "Home page", acronyms: acronyms, userLoggedIn: userLoggedIn,
                                  showCookieMessage: showCookieMessage)
       return try req.view().render("index", context)
     }
@@ -248,7 +248,7 @@ struct WebsiteController: RouteCollection {
     }
 
     let password = try BCrypt.hash(data.password)
-    let user = User(name: data.name, username: data.username, password: password, email: data.emailAddress, profilePicture: nil)
+    let user = User(name: data.name, username: data.username, password: password, email: data.emailAddress)
     return user.save(on: req).map(to: Response.self) { user in
       try req.authenticateSession(user)
       return req.redirect(to: "/")
@@ -316,7 +316,9 @@ struct WebsiteController: RouteCollection {
   }
 
   func addProfilePictureHandler(_ req: Request) throws -> Future<View> {
-    return try req.view().render("addProfilePicture", ["title": "Add Profile Picture"])
+    return try req.parameters.next(User.self).flatMap { user in
+      try req.view().render("addProfilePicture", ["title": "Add Profile Picture", "username": user.name])
+    }
   }
 
   func addProfilePicturePostHandler(_ req: Request) throws -> Future<Response> {
@@ -344,7 +346,7 @@ struct WebsiteController: RouteCollection {
 
 struct IndexContext: Encodable {
   let title: String
-  let acronyms: [Acronym]?
+  let acronyms: [Acronym]
   let userLoggedIn: Bool
   let showCookieMessage: Bool
 }

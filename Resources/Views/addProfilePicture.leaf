@@ -3,7 +3,7 @@
 
   <form method="post" enctype="multipart/form-data">
     <div class="form-group">
-      <label for="picture">Select Picture for #(user.name)</label>
+      <label for="picture">Select Picture for #(username)</label>
       <input type="file" name="picture" class="form-control-file"
        id="picture"/>
     </div>

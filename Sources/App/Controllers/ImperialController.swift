@@ -51,7 +51,7 @@ struct ImperialController: RouteCollection {
                  .first().flatMap(to: ResponseEncodable.self) { foundUser in
         guard let existingUser = foundUser else {
           let user = User(name: userInfo.name, username: userInfo.email, password: UUID().uuidString,
-                          email: userInfo.email, profilePicture: nil)
+                          email: userInfo.email)
           return user.save(on: request).map(to: ResponseEncodable.self) { user in
             try request.authenticateSession(user)
             return request.redirect(to: "/")
@@ -70,7 +70,7 @@ struct ImperialController: RouteCollection {
                  .flatMap(to: ResponseEncodable.self) { foundUser in
         guard let existingUser = foundUser else {
           let user = User(name: userInfo.name, username: userInfo.login,
-                          password: UUID().uuidString, email: emailInfo[0].email, profilePicture: nil)
+                          password: UUID().uuidString, email: emailInfo[0].email)
           return user.save(on: request).map(to: ResponseEncodable.self) { user in
             try request.authenticateSession(user)
             return request.redirect(to: "/")
@@ -133,11 +133,11 @@ extension GitHub {
       return try response.content.syncDecode(GitHubUserInfo.self)
     }
   }
-  
+
   static func getEmails(on request: Request) throws -> Future<[GitHubEmailInfo]> {
     var headers = HTTPHeaders()
     headers.bearerAuthorization = try BearerAuthorization(token: request.accessToken())
-    
+
     let githubUserAPIURL = "https://api.github.com/user/emails"
     return try request.client().get(githubUserAPIURL, headers: headers).map(to: [GitHubEmailInfo].self) { response in
       guard response.http.status == .ok else {
