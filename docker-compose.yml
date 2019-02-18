@@ -7,6 +7,13 @@ services:
     environment:
       - DATABASE_HOSTNAME=postgres
       - DATABASE_PORT=5432
+      - GOOGLE_CALLBACK_URL=test
+      - GOOGLE_CLIENT_ID=test
+      - GOOGLE_CLIENT_SECRET=test
+      - GITHUB_CALLBACK_URL=test
+      - GITHUB_CLIENT_ID=test
+      - GITHUB_CLIENT_SECRET=test
+      - SENDGRID_API_KEY=test
   postgres:
     image: "postgres"
     environment:
