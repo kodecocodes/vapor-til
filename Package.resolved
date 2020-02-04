@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/vapor/core.git",
         "state": {
           "branch": null,
-          "revision": "c64f63cb21631010952f7abfef719d376ab6a441",
-          "version": "3.9.1"
+          "revision": "10d33362a47fab03a067e78fb0791341d9c634fa",
+          "version": "3.9.3"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/vapor/fluent.git",
         "state": {
           "branch": null,
-          "revision": "b915c321c6f9e83743ee5efa35a30895e1b02e51",
-          "version": "3.2.0"
+          "revision": "783819d8838d15e1a05b459aa0fd1bde1e37ac26",
+          "version": "3.2.1"
         }
       },
       {
@@ -87,8 +87,8 @@
         "repositoryURL": "https://github.com/vapor-community/Imperial.git",
         "state": {
           "branch": null,
-          "revision": "b60f0e7b853290239441410f881ac2aad2f4f136",
-          "version": "0.13.0"
+          "revision": "d71416e65c48c0ae3b845d4b627cab4118d2434f",
+          "version": "0.14.0"
         }
       },
       {
@@ -96,8 +96,8 @@
         "repositoryURL": "https://github.com/vapor/jwt.git",
         "state": {
           "branch": null,
-          "revision": "2e225c722bf26407c1c4bd11d341e48759f46095",
-          "version": "3.0.0"
+          "revision": "4265f12b3f2585b8f5792ba6078c2cda0e4043a1",
+          "version": "3.1.1"
         }
       },
       {
@@ -114,8 +114,8 @@
         "repositoryURL": "https://github.com/vapor/multipart.git",
         "state": {
           "branch": null,
-          "revision": "f919a01c4d10a281d6236a21b0b1d1759a72b8eb",
-          "version": "3.0.4"
+          "revision": "f063180d0b84832accd33194e06ed3c41f8609ac",
+          "version": "3.1.1"
         }
       },
       {
@@ -123,8 +123,8 @@
         "repositoryURL": "https://github.com/vapor/postgresql.git",
         "state": {
           "branch": null,
-          "revision": "41cec2846f9cdd8233675da0d256efa3b8d62b21",
-          "version": "1.4.1"
+          "revision": "69ccf32e9164b207f9a773edac5433fe68ae3e5b",
+          "version": "1.5.0"
         }
       },
       {
@@ -132,8 +132,8 @@
         "repositoryURL": "https://github.com/vapor/routing.git",
         "state": {
           "branch": null,
-          "revision": "626190ddd2bd9f967743b60ba6adaf90bbd2651c",
-          "version": "3.0.2"
+          "revision": "d76f339c9716785e5079af9d7075d28ff7da3d92",
+          "version": "3.1.0"
         }
       },
       {
@@ -240,8 +240,8 @@
         "repositoryURL": "https://github.com/vapor/vapor.git",
         "state": {
           "branch": null,
-          "revision": "c86ada59b31c69f08a6abd4f776537cba48d5df6",
-          "version": "3.3.0"
+          "revision": "92a58a9a84e4330500b99fe355a94d29f67abe58",
+          "version": "3.3.1"
         }
       },
       {
