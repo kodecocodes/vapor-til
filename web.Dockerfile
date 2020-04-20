@@ -1,5 +1,5 @@
 # You can set the Swift version to what you need for your app. Versions can be found here: https://hub.docker.com/_/swift
-FROM swift:4.2.2 as builder
+FROM swift:5.2 as builder
 
 # For local build, add `--build-arg env=docker`
 # In your application, you can use `Environment.custom(name: "docker")` to check if you're in this env
@@ -14,7 +14,7 @@ RUN mkdir -p /build/lib && cp -R /usr/lib/swift/linux/*.so /build/lib
 RUN swift build -c release && mv `swift build -c release --show-bin-path` /build/bin
 
 # Production image
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 ARG env
 RUN apt-get -qq update && apt-get install -y \
   libicu55 libxml2 libbsd0 libcurl3 libatomic1 \

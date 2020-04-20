@@ -1,4 +1,4 @@
-// swift-tools-version:4.2
+// swift-tools-version:5.2
 
 /// Copyright (c) 2019 Razeware LLC
 ///
@@ -33,15 +33,21 @@ import PackageDescription
 let package = Package(
   name: "TILApp",
   dependencies: [
-    .package(url: "https://github.com/vapor/vapor.git", from: "3.0.0"),
-    .package(url: "https://github.com/vapor/fluent-postgresql.git", from: "1.0.0"),
-    .package(url: "https://github.com/vapor/leaf.git", from: "3.0.0"),
-    .package(url: "https://github.com/vapor/auth.git", from: "2.0.0"),
+    .package(name: "Vapor", url: "https://github.com/vapor/vapor.git", from: "3.0.0"),
+    .package(name: "FluentPostgreSQL", url: "https://github.com/vapor/fluent-postgresql.git", from: "1.0.0"),
+    .package(name: "Leaf", url: "https://github.com/vapor/leaf.git", from: "3.0.0"),
+    .package(name: "Auth", url: "https://github.com/vapor/auth.git", from: "2.0.0"),
     .package(url: "https://github.com/vapor-community/Imperial.git", from: "0.7.1"),
-    .package(url: "https://github.com/vapor-community/sendgrid-provider.git", from: "3.0.0")
+    .package(name: "SendGrid", url: "https://github.com/vapor-community/sendgrid-provider.git", from: "3.0.0")
   ],
   targets: [
-    .target(name: "App", dependencies: ["FluentPostgreSQL", "Vapor", "Leaf", "Authentication", "Imperial", "SendGrid"]),
+    .target(name: "App", dependencies: [
+      "FluentPostgreSQL",
+      "Vapor",
+      "Leaf", 
+      .product(name: "Authentication", package: "Auth"),
+      "Imperial", 
+      "SendGrid"]),
     .target(name: "Run", dependencies: ["App"]),
     .testTarget(name: "AppTests", dependencies: ["App"])
   ]
