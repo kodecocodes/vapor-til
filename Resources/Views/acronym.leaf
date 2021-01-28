@@ -1,25 +1,27 @@
-#set("content") {
-  <h1>#(acronym.short)</h1>
-  <h2>#(acronym.long)</h2>
+#extend("base"):
+  #export("content"):
+    <h1>#(acronym.short)</h1>
+    <h2>#(acronym.long)</h2>
 
-  <p>Created by <a href="/users/#(user.id)">#(user.name)</a></p>
+    <p>Created by <a href="/users/#(user.id)/">#(user.name)</a></p>
 
-  #if(count(categories) > 0) {
-  <h3>Categories</h3>
-  <ul>
-    #for(category in categories) {
-      <li>
-        <a href="/categories/#(category.id)">#(category.name)</a>
-      </li>
-    }
-  </ul>
-}
+    #if(count(categories) > 0):
+      <h3>Categories</h3>
+      <ul>
+        #for(category in categories):
+          <li>
+            <a href="/categories/#(category.id)">
+              #(category.name)
+            </a>
+          </li>
+        #endfor
+      </ul>
+    #endif
 
-  <form method="post" action="/acronyms/#(acronym.id)/delete">
-    <a class="btn btn-primary" href="/acronyms/#(acronym.id)/edit"
-     role="button">Edit</a>&nbsp;
-    <input class="btn btn-danger" type="submit" value="Delete" />
-  </form>
-}
-
-#embed("base")
+    <form method="post" action="/acronyms/#(acronym.id)/delete">
+      <a class="btn btn-primary" href="/acronyms/#(acronym.id)/edit"
+      role="button">Edit</a>&nbsp;
+      <input class="btn btn-danger" type="submit" value="Delete" />
+    </form>
+  #endexport
+#endextend

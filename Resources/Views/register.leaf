@@ -1,48 +1,42 @@
-#set("content") {
-  <h1>#(title)</h1>
+#extend("base"):
+  #export("content"):
+    <h1>#(title)</h1>
 
-  #if(message) {
-    <div class="alert alert-danger" role="alert">
-      Please fix the following errors:<br />
-      #(message)
-    </div>
-  }
+    #if(message):
+        <div class="alert alert-danger" role="alert">
+            Please fix the following errors:<br />
+            #(message)
+        </div>
+    #endif
 
-  <form method="post">
-    <div class="form-group">
-      <label for="name">Name</label>
-      <input type="text" name="name" class="form-control"
-       id="name"/>
-    </div>
+    <form method="post">
+        <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" name="name" class="form-control"
+        id="name"/>
+        </div>
 
-    <div class="form-group">
-      <label for="username">Username</label>
-      <input type="text" name="username" class="form-control"
-       id="username"/>
-    </div>
+        <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" name="username" class="form-control"
+        id="username"/>
+        </div>
 
-    <div class="form-group">
-      <label for="emailAddress">Email Address</label>
-      <input type="email" name="emailAddress" class="form-control"
-       id="emailAddress"/>
-    </div>
+        <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" name="password"
+        class="form-control" id="password"/>
+        </div>
 
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input type="password" name="password" class="form-control"
-       id="password"/>
-    </div>
+        <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" name="confirmPassword"
+        class="form-control" id="confirmPassword"/>
+        </div>
 
-    <div class="form-group">
-      <label for="confirmPassword">Confirm Password</label>
-      <input type="password" name="confirmPassword"
-       class="form-control" id="confirmPassword"/>
-    </div>
-
-    <button type="submit" class="btn btn-primary">
-      Register
-    </button>
-  </form>
-}
-
-#embed("base")
+        <button type="submit" class="btn btn-primary">
+        Register
+        </button>
+    </form>
+  #endexport
+#endextend

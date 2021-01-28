@@ -1,41 +1,41 @@
-#set("content") {
-  <h1>#(title)</h1>
+#extend("base"):
+  #export("content"):
+    <h1>#(title)</h1>
 
-  <form method="post">
-    #if(csrfToken) {
-      <input type="hidden" name="csrfToken" value="#(csrfToken)">
-    }
+    <form method="post">
+      #if(csrfToken):
+        <input type="hidden" name="csrfToken" value="#(csrfToken)">
+      #endif
+      
+      <div class="form-group">
+        <label for="short">Acronym</label>
+        <input type="text" name="short" class="form-control"
+        id="short" #if(editing): value="#(acronym.short)" #endif/>
+      </div>
 
-    <div class="form-group">
-      <label for="short">Acronym</label>
-      <input type="text" name="short" class="form-control"
-       id="short" #if(editing){value="#(acronym.short)"}/>
-    </div>
+      <div class="form-group">
+        <label for="long">Meaning</label>
+        <input type="text" name="long" class="form-control"
+        id="long" #if(editing): value="#(acronym.long)" #endif/>
+      </div>
 
-    <div class="form-group">
-      <label for="long">Meaning</label>
-      <input type="text" name="long" class="form-control"
-       id="long" #if(editing){value="#(acronym.long)"}/>
-    </div>
+      <div class="form-group">
+        <label for="categories">Categories</label>
+        <select name="categories[]" class="form-control"
+         id="categories" placeholder="Categories" multiple="multiple">
+          #if(editing):
+            #for(category in categories):
+              <option value="#(category.name)" selected="selected">
+                #(category.name)
+              </option>
+            #endfor
+          #endif
+        </select>
+      </div>
 
-    <div class="form-group">
-      <label for="categories">Categories</label>
-      <select name="categories[]" class="form-control"
-       id="categories" placeholder="Categories" multiple="multiple">
-       #if(editing) {
-         #for(category in categories) {
-           <option value="#(category.name)" selected="selected">
-             #(category.name)
-           </option>
-         }
-        }
-      </select>
-    </div>
-
-    <button type="submit" class="btn btn-primary">
-      #if(editing){Update} else{Submit}
-    </button>
-  </form>
-}
-
-#embed("base")
+      <button type="submit" class="btn btn-primary">
+        #if(editing): Update #else: Submit #endif
+      </button>
+    </form>
+  #endexport
+#endextend

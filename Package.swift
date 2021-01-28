@@ -1,6 +1,6 @@
 // swift-tools-version:5.2
 
-/// Copyright (c) 2019 Razeware LLC
+/// Copyright (c) 2021 Razeware LLC
 ///
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
@@ -32,23 +32,36 @@ import PackageDescription
 
 let package = Package(
   name: "TILApp",
+  platforms: [
+    .macOS(.v10_15)
+  ],
   dependencies: [
-    .package(name: "Vapor", url: "https://github.com/vapor/vapor.git", from: "3.0.0"),
-    .package(name: "FluentPostgreSQL", url: "https://github.com/vapor/fluent-postgresql.git", from: "1.0.0"),
-    .package(name: "Leaf", url: "https://github.com/vapor/leaf.git", from: "3.0.0"),
-    .package(name: "Auth", url: "https://github.com/vapor/auth.git", from: "2.0.0"),
-    .package(url: "https://github.com/vapor-community/Imperial.git", from: "0.7.1"),
-    .package(name: "SendGrid", url: "https://github.com/vapor-community/sendgrid-provider.git", from: "3.0.0")
+    // 💧 A server-side Swift web framework.
+    .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
+    .package(url: "https://github.com/vapor/fluent.git", from: "4.0.0"),
+    .package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.0.0"),
+    .package(url: "https://github.com/vapor/leaf.git", from: "4.0.0")
   ],
   targets: [
-    .target(name: "App", dependencies: [
-      "FluentPostgreSQL",
-      "Vapor",
-      "Leaf", 
-      .product(name: "Authentication", package: "Auth"),
-      "Imperial", 
-      "SendGrid"]),
-    .target(name: "Run", dependencies: ["App"]),
-    .testTarget(name: "AppTests", dependencies: ["App"])
+    .target(
+      name: "App",
+      dependencies: [
+        .product(name: "Fluent", package: "fluent"),
+        .product(name: "FluentPostgresDriver", package: "fluent-postgres-driver"),
+        .product(name: "Vapor", package: "vapor"),
+        .product(name: "Leaf", package: "leaf")
+      ],
+      swiftSettings: [
+        // Enable better optimizations when building in Release configuration. Despite the use of
+        // the `.unsafeFlags` construct required by SwiftPM, this flag is recommended for Release
+        // builds. See <https://github.com/swift-server/guides#building-for-production> for details.
+        .unsafeFlags(["-cross-module-optimization"], .when(configuration: .release))
+      ]
+    ),
+    .target(name: "Run", dependencies: [.target(name: "App")]),
+    .testTarget(name: "AppTests", dependencies: [
+      .target(name: "App"),
+      .product(name: "XCTVapor", package: "vapor"),
+    ])
   ]
 )

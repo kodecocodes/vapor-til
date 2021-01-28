@@ -1,26 +1,26 @@
-#set("content") {
-
-  <h1>All Users</h1>
-
-  #if(count(users) > 0) {
-    <table class="table table-bordered table-hover">
-      <thead class="thead-light">
-        <tr>
-          <th>Username</th><th>Name</th>
-        </tr>
-      </thead>
-      <tbody>
-        #for(user in users) {
+#extend("base"):
+  #export("content"):
+    <h1>All Users</h1>
+    
+    #if(count(users) > 0):
+      <table class="table table-bordered table-hover">
+        <thead class="thead-light">
           <tr>
-            <td><a href="/users/#(user.id)">#(user.username)</a></td>
-            <td>#(user.name)</td>
+            <th>Username</th>
+            <th>Name</th>
           </tr>
-        }
-      </tbody>
-    </table>
-  } else {
-    <h2>There aren't any users yet!</h2>
-  }
-}
-
-#embed("base")
+        </thead>
+        <tbody>
+          #for(user in users):
+            <tr>
+              <td><a href="/users/#(user.id)">#(user.username)</a></td>
+              <td>#(user.name)</td>
+            </tr>
+          #endfor
+        </tbody>
+      </table>
+    #else:
+      <h2>There aren’t any users yet!</h2>
+    #endif
+  #endexport
+#endextend

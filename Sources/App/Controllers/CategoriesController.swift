@@ -1,4 +1,4 @@
-/// Copyright (c) 2019 Razeware LLC
+/// Copyright (c) 2021 Razeware LLC
 ///
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
@@ -29,33 +29,36 @@
 import Vapor
 
 struct CategoriesController: RouteCollection {
-  func boot(router: Router) throws {
-    let categoriesRoute = router.grouped("api", "categories")
+  func boot(routes: RoutesBuilder) throws {
+    let categoriesRoute = routes.grouped("api", "categories")
     categoriesRoute.get(use: getAllHandler)
-    categoriesRoute.get(Category.parameter, use: getHandler)
-    categoriesRoute.get(Category.parameter, "acronyms", use: getAcronymsHandler)
+    categoriesRoute.get(":categoryID", use: getHandler)
+    categoriesRoute.get(":categoryID", "acronyms", use: getAcronymsHandler)
 
-    let tokenAuthMiddleware = User.tokenAuthMiddleware()
-    let guardAuthMiddleware = User.guardAuthMiddleware()
+    let tokenAuthMiddleware = Token.authenticator()
+    let guardAuthMiddleware = User.guardMiddleware()
     let tokenAuthGroup = categoriesRoute.grouped(tokenAuthMiddleware, guardAuthMiddleware)
-    tokenAuthGroup.post(Category.self, use: createHandler)
+    tokenAuthGroup.post(use: createHandler)
   }
 
-  func createHandler(_ req: Request, category: Category) throws -> Future<Category> {
-    return category.save(on: req)
+  func createHandler(_ req: Request) throws -> EventLoopFuture<Category> {
+    let category = try req.content.decode(Category.self)
+    return category.save(on: req.db).map { category }
   }
 
-  func getAllHandler(_ req: Request) throws -> Future<[Category]> {
-    return Category.query(on: req).all()
+  func getAllHandler(_ req: Request) -> EventLoopFuture<[Category]> {
+    Category.query(on: req.db).all()
   }
 
-  func getHandler(_ req: Request) throws -> Future<Category> {
-    return try req.parameters.next(Category.self)
+  func getHandler(_ req: Request) -> EventLoopFuture<Category> {
+    Category.find(req.parameters.get("categoryID"), on: req.db).unwrap(or: Abort(.notFound))
   }
 
-  func getAcronymsHandler(_ req: Request) throws -> Future<[Acronym]> {
-    return try req.parameters.next(Category.self).flatMap(to: [Acronym].self) { category in
-      try category.acronyms.query(on: req).all()
+  func getAcronymsHandler(_ req: Request) -> EventLoopFuture<[Acronym]> {
+    Category.find(req.parameters.get("categoryID"), on: req.db)
+      .unwrap(or: Abort(.notFound))
+      .flatMap { category in
+        category.$acronyms.get(on: req.db)
     }
   }
 }

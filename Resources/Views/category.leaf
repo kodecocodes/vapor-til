@@ -1,7 +1,7 @@
-#set("content") {
-  <h1>#(category.name)</h1>
-
-  #embed("acronymsTable")
-}
-
-#embed("base")
+#extend("base"):
+  #export("content"):
+    <h1>#(category.name)</h1>
+    
+    #extend("acronymsTable")
+  #endexport
+#endextend

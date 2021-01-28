@@ -1,4 +1,4 @@
-/// Copyright (c) 2019 Razeware LLC
+/// Copyright (c) 2021 Razeware LLC
 ///
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
@@ -26,47 +26,42 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
-import Foundation
 import Vapor
-import FluentPostgreSQL
-import Authentication
+import Fluent
 
-final class Token: Codable {
+final class Token: Model, Content {
+  static let schema = "tokens"
+
+  @ID
   var id: UUID?
-  var token: String
-  var userID: User.ID
 
-  init(token: String, userID: User.ID) {
-    self.token = token
-    self.userID = userID
+  @Field(key: "value")
+  var value: String
+
+  @Parent(key: "userID")
+  var user: User
+
+  init() {}
+
+  init(id: UUID? = nil, value: String, userID: User.IDValue) {
+    self.id = id
+    self.value = value
+    self.$user.id = userID
   }
 }
-
-extension Token: PostgreSQLUUIDModel {}
-
-extension Token: Migration {
-  static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {
-    return Database.create(self, on: connection) { builder in
-      try addProperties(to: builder)
-      builder.reference(from: \.userID, to: \User.id)
-    }
-  }
-}
-
-extension Token: Content {}
 
 extension Token {
   static func generate(for user: User) throws -> Token {
-    let random = try CryptoRandom().generateData(count: 16)
-    return try Token(token: random.base64EncodedString(), userID: user.requireID())
+    let random = [UInt8].random(count: 16).base64
+    return try Token(value: random, userID: user.requireID())
   }
 }
 
-extension Token: Authentication.Token {
-  static let userIDKey: UserIDKey = \Token.userID
-  typealias UserType = User
-}
-
-extension Token: BearerAuthenticatable {
-  static let tokenKey: TokenKey = \Token.token
+extension Token: ModelTokenAuthenticatable {
+  static let valueKey = \Token.$value
+  static let userKey = \Token.$user
+  typealias User = App.User
+  var isValid: Bool {
+    true
+  }
 }

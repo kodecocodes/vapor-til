@@ -1,4 +1,4 @@
-/// Copyright (c) 2019 Razeware LLC
+/// Copyright (c) 2021 Razeware LLC
 ///
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
@@ -27,42 +27,65 @@
 /// THE SOFTWARE.
 
 @testable import App
-import FluentPostgreSQL
-import Crypto
+import Fluent
+import Vapor
 
 extension User {
-  static func create(name: String = "Luke", username: String? = nil,
-                     on connection: PostgreSQLConnection) throws -> User {
+  // 1
+  static func create(
+    name: String = "Luke",
+    username: String? = nil,
+    on database: Database
+  ) throws -> User {
     let createUsername: String
+    // 2
     if let suppliedUsername = username {
       createUsername = suppliedUsername
+    // 3
     } else {
       createUsername = UUID().uuidString
     }
-    let password = try BCrypt.hash("password")
-    let user = User(name: name, username: createUsername, password: password, email: "\(createUsername)@test.com")
-    return try user.save(on: connection).wait()
+
+    // 4
+    let password = try Bcrypt.hash("password")
+    let user = User(
+      name: name,
+      username: createUsername,
+      password: password)
+    try user.save(on: database).wait()
+    return user
   }
 }
 
 extension Acronym {
-  static func create(short: String = "TIL", long: String = "Today I Learned",
-                     user: User? = nil, on connection: PostgreSQLConnection) throws -> Acronym {
+  static func create(
+    short: String = "TIL",
+    long: String = "Today I Learned",
+    user: User? = nil,
+    on database: Database
+  ) throws -> Acronym {
     var acronymsUser = user
-
+    
     if acronymsUser == nil {
-      acronymsUser = try User.create(on: connection)
+      acronymsUser = try User.create(on: database)
     }
-
-    let acronym = Acronym(short: short, long: long, userID: acronymsUser!.id!)
-    return try acronym.save(on: connection).wait()
+    
+    let acronym = Acronym(
+      short: short,
+      long: long,
+      userID: acronymsUser!.id!)
+    try acronym.save(on: database).wait()
+    return acronym
   }
 }
 
 extension App.Category {
-  static func create(name: String = "Random",
-                     on connection: PostgreSQLConnection) throws -> App.Category {
+  static func create(
+    name: String = "Random",
+    on database: Database
+  ) throws -> App.Category {
     let category = Category(name: name)
-    return try category.save(on: connection).wait()
+    try category.save(on: database).wait()
+    return category
   }
 }

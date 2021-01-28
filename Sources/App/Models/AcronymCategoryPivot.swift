@@ -1,4 +1,4 @@
-/// Copyright (c) 2019 Razeware LLC
+/// Copyright (c) 2021 Razeware LLC
 ///
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
@@ -26,34 +26,26 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
-import FluentPostgreSQL
+import Fluent
 import Foundation
 
-final class AcronymCategoryPivot: PostgreSQLUUIDPivot {
-
+final class AcronymCategoryPivot: Model {
+  static let schema = "acronym-category-pivot"
+  
+  @ID
   var id: UUID?
-  var acronymID: Acronym.ID
-  var categoryID: Category.ID
-
-  typealias Left = Acronym
-  typealias Right = Category
-  static let leftIDKey: LeftIDKey = \.acronymID
-  static let rightIDKey: RightIDKey = \.categoryID
-
-  init(_ acronym: Acronym, _ category: Category) throws {
-    self.acronymID = try acronym.requireID()
-    self.categoryID = try category.requireID()
-  }
-}
-
-extension AcronymCategoryPivot: ModifiablePivot {}
-
-extension AcronymCategoryPivot: Migration {
-  static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {
-    return Database.create(self, on: connection) { builder in
-      try addProperties(to: builder)
-      builder.reference(from: \.acronymID, to: \Acronym.id, onDelete: .cascade)
-      builder.reference(from: \.categoryID, to: \Category.id, onDelete: .cascade)
-    }
+  
+  @Parent(key: "acronymID")
+  var acronym: Acronym
+  
+  @Parent(key: "categoryID")
+  var category: Category
+  
+  init() {}
+  
+  init(id: UUID? = nil, acronym: Acronym, category: Category) throws {
+    self.id = id
+    self.$acronym.id = try acronym.requireID()
+    self.$category.id = try category.requireID()
   }
 }

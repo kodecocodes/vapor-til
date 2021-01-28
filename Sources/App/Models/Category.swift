@@ -1,4 +1,4 @@
-/// Copyright (c) 2019 Razeware LLC
+/// Copyright (c) 2021 Razeware LLC
 ///
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
@@ -26,38 +26,45 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
+import Fluent
 import Vapor
-import FluentPostgreSQL
 
-final class Category: Codable {
-  var id: Int?
+final class Category: Model, Content {
+  static let schema = "categories"
+  
+  @ID
+  var id: UUID?
+  
+  @Field(key: "name")
   var name: String
-
-  init(name: String) {
+  
+  @Siblings(through: AcronymCategoryPivot.self, from: \.$category, to: \.$acronym)
+  var acronyms: [Acronym]
+  
+  init() {}
+  
+  init(id: UUID? = nil, name: String) {
+    self.id = id
     self.name = name
   }
 }
 
-extension Category: PostgreSQLModel {}
-extension Category: Content {}
-extension Category: Migration {}
-extension Category: Parameter {}
-
 extension Category {
-  var acronyms: Siblings<Category, Acronym, AcronymCategoryPivot> {
-    return siblings()
-  }
-
-  static func addCategory(_ name: String, to acronym: Acronym, on req: Request) throws -> Future<Void> {
-    return Category.query(on: req).filter(\.name == name).first().flatMap(to: Void.self) { foundCategory in
-      if let existingCategory = foundCategory {
-        return acronym.categories.attach(existingCategory, on: req).transform(to: ())
-      } else {
-        let category = Category(name: name)
-        return category.save(on: req).flatMap(to: Void.self) { savedCategory in
-          return acronym.categories.attach(savedCategory, on: req).transform(to: ())
+  static func addCategory(_ name: String, to acronym: Acronym, on req: Request) -> EventLoopFuture<Void> {
+    Category.query(on: req.db)
+      .filter(\.$name == name)
+      .first()
+      .flatMap { foundCategory in
+        if let existingCategory = foundCategory {
+          return acronym.$categories
+            .attach(existingCategory, on: req.db)
+        } else {
+          let category = Category(name: name)
+          return category.save(on: req.db).flatMap {
+            acronym.$categories
+              .attach(category, on: req.db)
+          }
         }
       }
-    }
   }
 }
