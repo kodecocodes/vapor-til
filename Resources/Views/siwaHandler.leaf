@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en" class="h-100">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign In With Apple | Southdown Marketplace</title>
+    <script>
+      function handleCallback() {
+        const form = document.getElementById("siwaRedirectForm")
+        form.style.display = 'none';
+        form.submit();
+      }
+      window.onload = handleCallback;
+    </script>
+  </head>
+  <body class="d-flex flex-column h-100">
+
+    <form action="/login/siwa/handle" method="POST" id="siwaRedirectForm">
+      <input type="hidden" name="token" value="#(token)">
+      <input type="hidden" name="email" value="#(email)">
+      <input type="hidden" name="firstName" value="#(firstName)">
+      <input type="hidden" name="lastName" value="#(lastName)">
+      <input type="submit" value="If nothing happens click here">
+    </form>
+  </body>
+</html>

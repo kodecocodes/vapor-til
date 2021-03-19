@@ -6,3 +6,15 @@
   line-height: 60px;
   background-color: #f5f5f5;
 }
+
+#appleid-signin {
+  width: 240px;
+  height: 40px;
+  margin-top: 10px;
+}
+#appleid-signin:hover {
+  cursor: pointer;
+}
+#appleid-signin > div {
+  outline: none;
+}
