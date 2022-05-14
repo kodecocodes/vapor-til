@@ -1,4 +1,4 @@
-// swift-tools-version:5.2
+// swift-tools-version:5.6
 
 /// Copyright (c) 2021 Razeware LLC
 ///
@@ -33,7 +33,7 @@ import PackageDescription
 let package = Package(
   name: "TILApp",
   platforms: [
-    .macOS(.v10_15)
+    .macOS(.v12)
   ],
   dependencies: [
     // 💧 A server-side Swift web framework.
