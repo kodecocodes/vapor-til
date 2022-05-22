@@ -32,7 +32,7 @@ import Vapor
 import Leaf
 
 // configures your application
-public func configure(_ app: Application) throws {
+public func configure(_ app: Application) async throws {
   // uncomment to serve files from /Public folder
   app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
   app.middleware.use(app.sessions.middleware)
@@ -70,7 +70,7 @@ public func configure(_ app: Application) throws {
   
   app.logger.logLevel = .debug
   
-  try app.autoMigrate().wait()
+  try await app.autoMigrate()
 
   app.views.use(.leaf)
   

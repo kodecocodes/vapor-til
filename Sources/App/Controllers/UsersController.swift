@@ -47,61 +47,56 @@ struct UsersController: RouteCollection {
     tokenAuthGroup.post(use: createHandler)
   }
   
-  func createHandler(_ req: Request) throws -> EventLoopFuture<User.Public> {
-    let user = try req.content.decode(User.self)
-    user.password = try Bcrypt.hash(user.password)
-    return user.save(on: req.db).map { user.convertToPublic() }
-  }
-  
-  func getAllHandler(_ req: Request) -> EventLoopFuture<[User.Public]> {
-    User.query(on: req.db).all().convertToPublic()
-  }
-  
-  func getHandler(_ req: Request) -> EventLoopFuture<User.Public> {
-    User.find(req.parameters.get("userID"), on: req.db).unwrap(or: Abort(.notFound)).convertToPublic()
-  }
-  
-  func getAcronymsHandler(_ req: Request) -> EventLoopFuture<[Acronym]> {
-    User.find(req.parameters.get("userID"), on: req.db).unwrap(or: Abort(.notFound)).flatMap { user in
-      user.$acronyms.get(on: req.db)
+  func createHandler(_ req: Request) async throws -> User.Public {
+        let user = try req.content.decode(User.self)
+        user.password = try Bcrypt.hash(user.password)
+        try await user.save(on: req.db)
+        return user.convertToPublic()
     }
-  }
   
-  func loginHandler(_ req: Request) throws -> EventLoopFuture<Token> {
-    let user = try req.auth.require(User.self)
-    let token = try Token.generate(for: user)
-    return token.save(on: req.db).map { token }
-  }
-  
-  func signInWithApple(_ req: Request) throws -> EventLoopFuture<Token> {
-    let data = try req.content.decode(SignInWithAppleToken.self)
-    guard let appIdentifier = Environment.get("IOS_APPLICATION_IDENTIFIER") else {
-      throw Abort(.internalServerError)
+    func getAllHandler(_ req: Request) async throws -> [User.Public] {
+        try await User.query(on: req.db).all().convertToPublic()
     }
-    return req.jwt.apple.verify(data.token, applicationIdentifier: appIdentifier).flatMap { siwaToken -> EventLoopFuture<Token> in
-      User.query(on: req.db).filter(\.$siwaIdentifier == siwaToken.subject.value).first().flatMap { user in
-        let userFuture: EventLoopFuture<User>
-        if let user = user {
-          userFuture = req.eventLoop.future(user)
+  
+    func getHandler(_ req: Request) async throws -> User.Public {
+        guard let user = try await User.find(req.parameters.get("userID"), on: req.db) else { throw Abort(.notFound) }
+        return user.convertToPublic()
+    }
+  
+    func getAcronymsHandler(_ req: Request) async throws -> [Acronym] {
+        guard let user = try await User.find(req.parameters.get("userID"), on: req.db) else { throw Abort(.notFound) }
+        return try await user.$acronyms.get(on: req.db)
+    }
+  
+    func loginHandler(_ req: Request) async throws -> Token {
+        let user = try req.auth.require(User.self)
+        let token = try Token.generate(for: user)
+        try await token.save(on: req.db)
+        return token
+    }
+  
+    func signInWithApple(_ req: Request) async throws -> Token {
+        let data = try req.content.decode(SignInWithAppleToken.self)
+        guard let appIdentifier = Environment.get("IOS_APPLICATION_IDENTIFIER") else {
+            throw Abort(.internalServerError)
+        }
+        let siwaToken = try await req.jwt.apple.verify(data.token, applicationIdentifier: appIdentifier).get()
+        let user: User
+        if let foundUser = try await User.query(on: req.db).filter(\.$siwaIdentifier == siwaToken.subject.value).first() {
+            user = foundUser
         } else {
-          guard let email = siwaToken.email, let name = data.name else {
-            return req.eventLoop.future(error: Abort(.badRequest))
-          }
-          let user = User(name: name, username: email, password: UUID().uuidString, siwaIdentifier: siwaToken.subject.value)
-          userFuture = user.save(on: req.db).map { user }
+            guard let email = siwaToken.email, let name = data.name else {
+                throw Abort(.badRequest)
+            }
+            let newUser = User(name: name, username: email, password: UUID().uuidString, siwaIdentifier: siwaToken.subject.value)
+            try await newUser.save(on: req.db)
+            user = newUser
         }
-        return userFuture.flatMap { user in
-          let token: Token
-          do {
-            token = try Token.generate(for: user)
-          } catch {
-            return req.eventLoop.future(error: error)
-          }
-          return token.save(on: req.db).map { token }
-        }
-      }
+        let token: Token
+        token = try Token.generate(for: user)
+        try await token.save(on: req.db)
+        return token
     }
-  }
 }
 
 struct SignInWithAppleToken: Content {

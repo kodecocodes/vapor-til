@@ -50,21 +50,14 @@ final class Category: Model, Content {
 }
 
 extension Category {
-  static func addCategory(_ name: String, to acronym: Acronym, on req: Request) -> EventLoopFuture<Void> {
-    Category.query(on: req.db)
-      .filter(\.$name == name)
-      .first()
-      .flatMap { foundCategory in
-        if let existingCategory = foundCategory {
-          return acronym.$categories
-            .attach(existingCategory, on: req.db)
-        } else {
+  static func addCategory(_ name: String, to acronym: Acronym, on req: Request) async throws {
+      if let foundCategory = try await Category.query(on: req.db).filter(\.$name == name).first() {
+          try await acronym.$categories.attach(foundCategory, method: .ifNotExists, on: req.db)
+      }
+      else {
           let category = Category(name: name)
-          return category.save(on: req.db).flatMap {
-            acronym.$categories
-              .attach(category, on: req.db)
-          }
-        }
+          try await category.save(on: req.db)
+          try await acronym.$categories.attach(category, method: .ifNotExists, on: req.db)
       }
   }
 }
