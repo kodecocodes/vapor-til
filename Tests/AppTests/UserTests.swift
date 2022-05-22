@@ -35,8 +35,8 @@ final class UserTests: XCTestCase {
   let usersURI = "/api/users/"
   var app: Application!
   
-  override func setUpWithError() throws {
-    app = try Application.testable()
+  func setUpWithError() async throws {
+    app = try await Application.testable()
   }
   
   override func tearDownWithError() throws {

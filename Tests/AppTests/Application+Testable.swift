@@ -30,9 +30,9 @@
 @testable import App
 
 extension Application {
-  static func testable() throws -> Application {
+    static func testable() async throws -> Application {
     let app = Application(.testing)
-    try configure(app)
+    try await configure(app)
     
     try app.autoRevert().wait()
     try app.autoMigrate().wait()
