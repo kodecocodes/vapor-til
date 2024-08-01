@@ -9,7 +9,7 @@
 
 # Vapor TIL
 
-This is the Vapor TIL (Today I Learned) application that is used throughout the [Server Side Swift with Vapor](https://store.raywenderlich.com/products/server-side-swift-with-vapor) book. The first sections of the book take you through everything you need to know to get started with Vapor. This application is deployed to Vapor Cloud, Heroku, Docker and AWS, using this repository!
+This is the Vapor TIL (Today I Learned) application that is used throughout the [Server Side Swift with Vapor](https://www.kodeco.com/books/server-side-swift-with-vapor) book. The first sections of the book take you through everything you need to know to get started with Vapor. This application is deployed to Vapor Cloud, Heroku, Docker and AWS, using this repository!
 
 In the book, you'll learn how to build routes and use Fluent to interact with a database. You'll learn how to create dynamic websites with Leaf and authenticate APIs, websites and validate fields. The 2nd half of the book goes into more advanced topics, including WebSockets, caching and microservices.
 
@@ -21,7 +21,7 @@ In the book, you'll learn how to build routes and use Fluent to interact with a 
   </a>
 </p>
 
-The book is available on the [raywenderlich.com store](https://store.raywenderlich.com/products/server-side-swift-with-vapor).
+The book is available on the [raywenderlich.com store](https://www.kodeco.com/books/server-side-swift-with-vapor).
 
 ## Video Course
 
@@ -31,7 +31,7 @@ The book is available on the [raywenderlich.com store](https://store.raywenderli
   </a>
 </p>
 
-The video course is available to raywenderlich.com subscribers, which can be [watched here](https://videos.raywenderlich.com/courses/115-server-side-swift-with-vapor/lessons/1).
+The video course is available to raywenderlich.com subscribers, which can be [watched here](https://www.kodeco.com/21451628-server-side-swift-with-vapor/lessons/1).
 
 There are 30 videos covering:
 
