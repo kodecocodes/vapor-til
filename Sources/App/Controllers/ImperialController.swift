@@ -60,37 +60,35 @@ struct ImperialController: RouteCollection {
   }
 
   func processGoogleLogin(request: Request, token: String) throws -> EventLoopFuture<ResponseEncodable> {
-    try Google.getUser(on: request).flatMap { userInfo in
-      User.query(on: request.db).filter(\.$username == userInfo.email).first().flatMap { foundUser in
-        guard let existingUser = foundUser else {
-          let user = User(name: userInfo.name, username: userInfo.email, password: UUID().uuidString)
-          return user.save(on: request.db).flatMap {
-            request.session.authenticate(user)
-            return generateRedirect(on: request, for: user)
+      let promise = request.eventLoop.makePromise(of: ResponseEncodable.self)
+      promise.completeWithTask {
+          let userInfo = try await Google.getUser(on: request)
+          guard let existingUser = try await User.query(on: request.db).filter(\.$username == userInfo.email).first() else {
+              let user = User(name: userInfo.name, username: userInfo.email, password: UUID().uuidString)
+              try await user.save(on: request.db)
+              request.session.authenticate(user)
+             return try await generateRedirect(on: request, for: user)
           }
-        }
         request.session.authenticate(existingUser)
-        return generateRedirect(on: request, for: existingUser)
+        return try await generateRedirect(on: request, for: existingUser)
       }
-    }
+    return promise.futureResult
   }
 
   func processGitHubLogin(request: Request, token: String) throws -> EventLoopFuture<ResponseEncodable> {
-    return try GitHub.getUser(on: request).flatMap { userInfo in
-      return User.query(on: request.db).filter(\.$username == userInfo.login).first().flatMap { foundUser in
-        guard let existingUser = foundUser else {
-          let user = User(name: userInfo.name,
-                          username: userInfo.login,
-                          password: UUID().uuidString)
-          return user.save(on: request.db).flatMap {
-            request.session.authenticate(user)
-            return generateRedirect(on: request, for: user)
+      let promise = request.eventLoop.makePromise(of: ResponseEncodable.self)
+      promise.completeWithTask {
+          let userInfo = try await GitHub.getUser(on: request)
+          guard let existingUser = try await User.query(on: request.db).filter(\.$username == userInfo.login).first() else {
+              let user = User(name: userInfo.name, username: userInfo.login, password: UUID().uuidString)
+              try await user.save(on: request.db)
+              request.session.authenticate(user)
+             return try await generateRedirect(on: request, for: user)
           }
-        }
-        request.session.authenticate(existingUser)
-        return generateRedirect(on: request, for: existingUser)
+          request.session.authenticate(existingUser)
+          return try await generateRedirect(on: request, for: existingUser)
       }
-    }
+      return promise.futureResult
   }
 
   func iOSGoogleLogin(_ req: Request) -> Response {
@@ -122,6 +120,23 @@ struct ImperialController: RouteCollection {
       req.redirect(to: url)
     }
   }
+    
+    func generateRedirect(on req: Request, for user: User) async throws -> ResponseEncodable {
+      let redirectURL: String
+      if req.session.data["oauth_login"] == "iOS" {
+        do {
+          let token = try Token.generate(for: user)
+          try await token.save(on: req.db)
+          redirectURL = "tilapp://auth?token=\(token.value)"
+        } catch {
+          throw error
+        }
+      } else {
+        redirectURL = "/"
+      }
+      req.session.data["oauth_login"] = nil
+      return req.redirect(to: redirectURL)
+    }
 }
 
 struct GoogleUserInfo: Content {
@@ -130,12 +145,12 @@ struct GoogleUserInfo: Content {
 }
 
 extension Google {
-  static func getUser(on request: Request) throws -> EventLoopFuture<GoogleUserInfo> {
+  static func getUser(on request: Request) async throws -> GoogleUserInfo {
     var headers = HTTPHeaders()
     headers.bearerAuthorization = try BearerAuthorization(token: request.accessToken())
 
     let googleAPIURL: URI = "https://www.googleapis.com/oauth2/v1/userinfo?alt=json"
-    return request.client.get(googleAPIURL, headers: headers).flatMapThrowing { response in
+    let response = try await request.client.get(googleAPIURL, headers: headers)
       guard response.status == .ok else {
         if response.status == .unauthorized {
           throw Abort.redirect(to: "/login-google")
@@ -144,7 +159,7 @@ extension Google {
         }
       }
       return try response.content.decode(GoogleUserInfo.self)
-    }
+    
   }
 }
 
@@ -154,13 +169,13 @@ struct GitHubUserInfo: Content {
 }
 
 extension GitHub {
-  static func getUser(on request: Request) throws -> EventLoopFuture<GitHubUserInfo> {
+  static func getUser(on request: Request) async throws -> GitHubUserInfo {
     var headers = HTTPHeaders()
     try headers.add(name: .authorization, value: "token \(request.accessToken())")
     headers.add(name: .userAgent, value: "vapor")
 
     let githubUserAPIURL: URI = "https://api.github.com/user"
-    return request.client.get(githubUserAPIURL, headers: headers).flatMapThrowing { response in
+      let response = try await request.client.get(githubUserAPIURL, headers: headers)
       guard response.status == .ok else {
         if response.status == .unauthorized {
           throw Abort.redirect(to: "/login-github")
@@ -168,7 +183,6 @@ extension GitHub {
           throw Abort(.internalServerError)
         }
       }
-      return try response.content.decode(GitHubUserInfo.self)
-    }
+    return try response.content.decode(GitHubUserInfo.self)
   }
 }

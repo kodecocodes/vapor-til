@@ -41,24 +41,23 @@ struct CategoriesController: RouteCollection {
     tokenAuthGroup.post(use: createHandler)
   }
 
-  func createHandler(_ req: Request) throws -> EventLoopFuture<Category> {
+  func createHandler(_ req: Request) async throws -> Category {
     let category = try req.content.decode(Category.self)
-    return category.save(on: req.db).map { category }
+    try await category.save(on: req.db)
+    return category
   }
 
-  func getAllHandler(_ req: Request) -> EventLoopFuture<[Category]> {
-    Category.query(on: req.db).all()
+  func getAllHandler(_ req: Request) async throws -> [Category] {
+    try await Category.query(on: req.db).all()
   }
 
-  func getHandler(_ req: Request) -> EventLoopFuture<Category> {
-    Category.find(req.parameters.get("categoryID"), on: req.db).unwrap(or: Abort(.notFound))
+  func getHandler(_ req: Request) async throws -> Category {
+      guard let category = try await Category.find(req.parameters.get("categoryID"), on: req.db) else { throw Abort(.notFound) }
+      return category
   }
 
-  func getAcronymsHandler(_ req: Request) -> EventLoopFuture<[Acronym]> {
-    Category.find(req.parameters.get("categoryID"), on: req.db)
-      .unwrap(or: Abort(.notFound))
-      .flatMap { category in
-        category.$acronyms.get(on: req.db)
-    }
+  func getAcronymsHandler(_ req: Request) async throws -> [Acronym] {
+      guard let category = try await Category.find(req.parameters.get("categoryID"), on: req.db) else { throw Abort(.notFound) }
+      return try await category.$acronyms.get(on: req.db)
   }
 }

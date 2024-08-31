@@ -34,8 +34,8 @@ final class CategoryTests: XCTestCase {
   let categoryName = "Teenager"
   var app: Application!
 
-  override func setUp() {
-    app = try! Application.testable()
+  override func setUp() async throws {
+    app = try await Application.testable()
   }
 
   override func tearDown() {
